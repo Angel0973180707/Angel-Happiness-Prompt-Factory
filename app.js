@@ -5,9 +5,8 @@
 // ========================================
 
 const CONFIG = {
-  GAS_URL: "你的exec網址"
+  GAS_URL: "https://script.google.com/macros/s/AKfycbzGjQuix5THq44jWLmFWjuKsjes2crL6ys69mPQmXqng5nJBHlxCUHgSbsgxGepXcDgxg/exec"
 };
-
 // ========================================
 // DOM
 // ========================================
