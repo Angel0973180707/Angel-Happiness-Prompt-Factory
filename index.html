@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>幸福生態圈 AI 控制台 v3-lite</title>
+  <title>幸福生態圈 AI 控制台 v4.5</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="app">
     <header class="hero">
-      <p class="eyebrow">Happiness Ecosystem AI Console</p>
-      <h1>幸福生態圈 AI 控制台 v3-lite</h1>
-      <p>輸入一句靈感，系統自動生成內容包、視覺導演 Prompt、Shorts Hook，並可回填 Google Sheets。</p>
+      <p class="eyebrow">Happiness Ecosystem AI OS</p>
+      <h1>幸福生態圈 AI 控制台 v4.5</h1>
+      <p>故事 → YouTube 長影片 → Shorts → 圖文素材 → 多平台導流。</p>
     </header>
 
     <section class="panel">
@@ -23,51 +23,28 @@
       <div class="grid">
         <button id="saveConfigBtn">儲存設定</button>
         <button id="testBtn" class="secondary">測試連線</button>
-        <button id="loadSeriesBtn" class="secondary">讀取系列</button>
+        <button id="loadSeriesBtn" class="secondary">讀取故事</button>
       </div>
 
       <p id="statusText" class="status">尚未連線</p>
     </section>
 
     <section class="panel">
-      <h2>② 幸福靈感輸入</h2>
+      <h2>② 選擇故事</h2>
 
-      <label>主題宇宙</label>
-      <select id="unitSelect">
-        <option value="幸福旅居">幸福旅居</option>
-        <option value="幸福教養">幸福教養</option>
-        <option value="健康頻率">健康頻率</option>
-        <option value="生活好物">生活好物</option>
-        <option value="幸福緣手作">幸福緣手作</option>
-        <option value="智慧名片商業系">智慧名片商業系</option>
+      <label>故事素材</label>
+      <select id="storySelect">
+        <option value="">請先讀取故事</option>
       </select>
-
-      <label>系列名稱</label>
-      <select id="seriesSelect">
-        <option value="早安圖">早安圖</option>
-        <option value="晚安圖">晚安圖</option>
-        <option value="生命旅居">生命旅居</option>
-        <option value="慢生活">慢生活</option>
-        <option value="情緒教養">情緒教養</option>
-        <option value="睡眠療癒">睡眠療癒</option>
-        <option value="療癒小物">療癒小物</option>
-        <option value="料理食譜板">料理食譜板</option>
-        <option value="品牌導流">品牌導流</option>
-      </select>
-
-      <label>一句靈感</label>
-      <textarea id="ideaInput" placeholder="例如：今天不用急著變更好"></textarea>
 
       <div class="grid">
-        <button id="generateBtn">生成內容包</button>
-        <button id="copyBtn" class="secondary">複製 03 TSV</button>
-        <button id="writeBtn" class="accent">寫入 Sheets</button>
+        <button id="generateAllBtn">生成內容宇宙</button>
       </div>
     </section>
 
     <section class="panel result">
       <h2>③ 生成結果</h2>
-      <div id="resultArea" class="empty">尚未生成內容</div>
+      <div id="output" class="empty">尚未生成內容</div>
     </section>
   </main>
 
