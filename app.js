@@ -1,5 +1,74 @@
+// app.js 完整覆蓋版
+
 const GAS_URL =
 "https://script.google.com/macros/s/AKfycbzGjQuix5THq44jWLmFWjuKsjes2crL6ys69mPQmXqng5nJBHlxCUHgSbsgxGepXcDgxg/exec";
+
+
+
+// ========================================
+// 初始化
+// ========================================
+
+window.onload = async function(){
+
+  await loadSeries();
+
+};
+
+
+
+// ========================================
+// 載入系列
+// ========================================
+
+async function loadSeries(){
+
+  try{
+
+    const res = await fetch(
+      GAS_URL + "?action=getSeries"
+    );
+
+    const data = await res.json();
+
+    const select =
+      document.getElementById("series");
+
+    select.innerHTML =
+      '<option value="">請選擇系列</option>';
+
+    if(data.data){
+
+      data.data.forEach(item=>{
+
+        const option =
+          document.createElement("option");
+
+        option.value =
+          item.series_name;
+
+        option.textContent =
+          item.series_name;
+
+        select.appendChild(option);
+
+      });
+
+    }
+
+  }catch(err){
+
+    console.error(err);
+
+  }
+
+}
+
+
+
+// ========================================
+// 生成 Prompt
+// ========================================
 
 function generatePrompt(){
 
@@ -31,6 +100,7 @@ const topicCount =
 document.getElementById("topicCount").value;
 
 let prompt = "";
+
 
 
 // ========================================
@@ -73,21 +143,21 @@ ${extra}
 【任務】
 ━━━━━━━━━━━━━━━━━━━
 
-請先生成：
+請生成：
 
-${topicCount}個適合此系列長期經營的主題。
+${topicCount}個適合長期經營的主題。
 
 主題必須：
 
 ✓ 有幸福感
 ✓ 有生活感
-✓ 有情緒畫面
+✓ 有畫面感
 ✓ 適合日更
 ✓ 適合 IG／Shorts／TikTok／FB／小紅書
 ✓ 適合日系成人療癒繪本風
 
 ━━━━━━━━━━━━━━━━━━━
-【輸出格式】
+【請輸出】
 ━━━━━━━━━━━━━━━━━━━
 
 1. 主題名稱
@@ -95,11 +165,10 @@ ${topicCount}個適合此系列長期經營的主題。
 
 不要生成圖片。
 
-只生成主題。
-
 `;
 
 }
+
 
 
 // ========================================
@@ -181,6 +250,7 @@ ${extra}
 }
 
 
+
 // ========================================
 // 短影音素材
 // ========================================
@@ -257,6 +327,7 @@ ${extra}
 }
 
 
+
 // ========================================
 // 系列擴充
 // ========================================
@@ -285,6 +356,7 @@ ${topicCount}個適合長期經營的新系列。
 }
 
 
+
 // ========================================
 // 主題生成
 // ========================================
@@ -310,6 +382,7 @@ ${topicCount}個可長期經營主題。
 `;
 
 }
+
 
 
 // ========================================
@@ -347,6 +420,7 @@ FB
 }
 
 
+
 // ========================================
 // 回填指令
 // ========================================
@@ -374,6 +448,10 @@ document.getElementById("output").innerText = prompt;
 
 
 
+// ========================================
+// 複製 Prompt
+// ========================================
+
 function copyPrompt(){
 
 const text =
@@ -386,6 +464,10 @@ alert("已複製 Prompt");
 }
 
 
+
+// ========================================
+// 儲存視覺內容
+// ========================================
 
 async function saveVisualContent(){
 
