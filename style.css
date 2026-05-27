@@ -1,1 +1,171 @@
+body{
+  margin:0;
+  background:#f6efe6;
+  font-family:"Noto Sans TC",sans-serif;
+  color:#4e4339;
+}
 
+.app{
+  display:grid;
+  grid-template-columns:320px 1fr 320px;
+  gap:20px;
+  padding:20px;
+  min-height:100vh;
+  box-sizing:border-box;
+}
+
+.card{
+  background:#fffaf4;
+  border-radius:28px;
+  padding:24px;
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.06),
+    0 2px 8px rgba(0,0,0,.04);
+}
+
+h1{
+  margin-top:0;
+  margin-bottom:24px;
+  font-size:30px;
+  line-height:1.4;
+  color:#c38b4c;
+}
+
+h2{
+  margin-top:0;
+  margin-bottom:20px;
+  color:#c38b4c;
+}
+
+label{
+  display:block;
+  margin-top:18px;
+  margin-bottom:8px;
+  font-size:15px;
+  font-weight:700;
+  color:#6d5d4f;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:15px;
+  border-radius:18px;
+  border:1px solid #eadbc8;
+  background:#fff;
+  box-sizing:border-box;
+  font-size:15px;
+  outline:none;
+  transition:.2s;
+  color:#4e4339;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:#d8a268;
+  box-shadow:0 0 0 4px rgba(216,162,104,.15);
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+  line-height:1.7;
+}
+
+button{
+  width:100%;
+  margin-top:22px;
+  padding:16px;
+  border:none;
+  border-radius:20px;
+  background:#d89b5a;
+  color:white;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{
+  transform:translateY(-1px);
+  opacity:.95;
+}
+
+button:active{
+  transform:scale(.98);
+}
+
+#output{
+  background:white;
+  border-radius:22px;
+  padding:24px;
+  min-height:650px;
+  border:1px solid #eadbc8;
+  white-space:pre-wrap;
+  line-height:1.9;
+  overflow:auto;
+  font-size:15px;
+}
+
+.left{
+  position:sticky;
+  top:20px;
+  height:fit-content;
+}
+
+.right{
+  position:sticky;
+  top:20px;
+  height:fit-content;
+}
+
+::-webkit-scrollbar{
+  width:10px;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#dcc1a0;
+  border-radius:20px;
+}
+
+::-webkit-scrollbar-track{
+  background:#f5ede3;
+}
+
+@media(max-width:1200px){
+
+  .app{
+    grid-template-columns:1fr;
+  }
+
+  .left,
+  .right{
+    position:relative;
+    top:auto;
+  }
+
+}
+
+@media(max-width:640px){
+
+  .app{
+    padding:14px;
+    gap:14px;
+  }
+
+  .card{
+    padding:18px;
+    border-radius:22px;
+  }
+
+  h1{
+    font-size:24px;
+  }
+
+  #output{
+    min-height:420px;
+  }
+
+}
