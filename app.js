@@ -1,11 +1,9 @@
 const LS_GAS_URL = "happiness_ai_console_gas_url_v3";
 let latestPackage = null;
-
 const $ = (id) => document.getElementById(id);
 
 window.addEventListener("DOMContentLoaded", () => {
   $("gasUrl").value = localStorage.getItem(LS_GAS_URL) || "";
-
   $("saveConfigBtn").addEventListener("click", saveConfig);
   $("testBtn").addEventListener("click", testConnection);
   $("loadSeriesBtn").addEventListener("click", loadSeries);
@@ -85,72 +83,73 @@ function buildLocalAIContent({ unit, series, idea }) {
   const stamp = formatStamp(new Date());
   const universe = getUniverseProfile(unit);
   const topic = analyzeIdea(idea, unit, series);
-  const title = makeTitle(idea, topic, series);
-  const mainCopy = makeMainCopy(idea, topic, unit);
+  const title = makeTitle(idea, series);
+  const mainCopy = makeMainCopy(idea, unit);
   const platformCopy = `${title}\n\n${mainCopy}\n\n#${unit}`;
   const hashtags = makeHashtags(unit, series);
   const finalPrompt = makeFinalPrompt(universe, topic);
 
-  return {
-    visual: {
-      content_id: `${unitCode(unit)}-C-${stamp}`,
-      unit,
-      series_name: series,
-      topic_name: topic.topic_name,
-      content_type: "POSTER_SINGLE",
-      content_title: title,
-      main_copy: mainCopy,
-      visual_style: universe.visual_style,
-      layout_type: "POSTER",
-      image_prompt: `${universe.visual_style}，${topic.scene_setting}`,
-      output_ratio: universe.ratio,
-      music_style: topic.music_style,
-      platform_copy: platformCopy,
-      hashtags,
-      theme_emotion: topic.theme_emotion,
-      scene_setting: topic.scene_setting,
-      character_setting: universe.character,
-      character_action: topic.character_action,
-      lighting_style: topic.lighting_style,
-      color_palette: topic.color_palette,
-      composition_style: topic.composition_style,
-      texture_style: universe.texture_style,
-      brand_elements: universe.logo,
-      quality_keywords: universe.quality_keywords,
-      negative_prompt: universe.negative_prompt,
-      final_prompt: finalPrompt,
-      shorts_cover_text: makeCoverText(idea),
-      shorts_hook_text: makeHookText(idea),
-      emotion_trigger: topic.emotion_trigger,
-      content_energy_level: topic.energy,
-      visual_focus_point: topic.visual_focus_point,
-      scroll_stopping_element: topic.scroll_stopping_element,
-      target_platform: "IG / TikTok / YouTube Shorts",
-      reuse_potential: "高"
-    },
-    short: {
-      short_id: `${unitCode(unit)}-S-${stamp}`,
-      unit,
-      series_name: series,
-      topic_name: topic.topic_name,
-      short_title: title,
-      hook_type: topic.hook_type,
-      emotion_trigger: topic.emotion_trigger,
-      visual_style: universe.visual_style,
-      opening_script: makeHookText(idea),
-      main_script: mainCopy,
-      ending_script: "把這份感覺，留給今天的自己。",
-      bgm_style: topic.music_style,
-      cta_style: "柔性陪伴型",
-      shorts_cover_text: makeCoverText(idea),
-      shorts_hook_text: makeHookText(idea),
-      video_prompt: finalPrompt,
-      platform_focus: "IG / TikTok / YouTube Shorts",
-      output_ratio: "9:16",
-      status: "待產圖",
-      notes: "v3-lite 本地規則引擎生成"
-    }
+  const visual = {
+    content_id: `${unitCode(unit)}-C-${stamp}`,
+    unit,
+    series_name: series,
+    topic_name: idea,
+    content_type: "POSTER_SINGLE",
+    content_title: title,
+    main_copy: mainCopy,
+    visual_style: universe.visual_style,
+    layout_type: "POSTER",
+    image_prompt: `${universe.visual_style}，${topic.scene_setting}`,
+    output_ratio: universe.ratio,
+    music_style: topic.music_style,
+    platform_copy: platformCopy,
+    hashtags,
+    theme_emotion: topic.theme_emotion,
+    scene_setting: topic.scene_setting,
+    character_setting: universe.character,
+    character_action: topic.character_action,
+    lighting_style: topic.lighting_style,
+    color_palette: topic.color_palette,
+    composition_style: topic.composition_style,
+    texture_style: universe.texture_style,
+    brand_elements: universe.logo,
+    quality_keywords: universe.quality_keywords,
+    negative_prompt: universe.negative_prompt,
+    final_prompt: finalPrompt,
+    shorts_cover_text: makeCoverText(idea),
+    shorts_hook_text: makeHookText(idea),
+    emotion_trigger: topic.emotion_trigger,
+    content_energy_level: topic.energy,
+    visual_focus_point: topic.visual_focus_point,
+    scroll_stopping_element: topic.scroll_stopping_element,
+    target_platform: "IG / TikTok / YouTube Shorts",
+    reuse_potential: "高"
   };
+
+  const short = {
+    short_id: `${unitCode(unit)}-S-${stamp}`,
+    unit,
+    series_name: series,
+    topic_name: idea,
+    short_title: title,
+    hook_type: topic.hook_type,
+    emotion_trigger: topic.emotion_trigger,
+    visual_style: universe.visual_style,
+    opening_script: makeHookText(idea),
+    main_script: mainCopy,
+    ending_script: "把這份感覺，留給今天的自己。",
+    bgm_style: topic.music_style,
+    cta_style: "柔性陪伴型",
+    shorts_cover_text: makeCoverText(idea),
+    shorts_hook_text: makeHookText(idea),
+    video_prompt: finalPrompt,
+    platform_focus: "IG / TikTok / YouTube Shorts",
+    output_ratio: "9:16",
+    status: "待產圖",
+    notes: "v3-lite 本地規則引擎生成"
+  };
+
+  return { visual, short };
 }
 
 function getUniverseProfile(unit) {
@@ -203,7 +202,6 @@ function getUniverseProfile(unit) {
 
 function analyzeIdea(idea, unit, series) {
   let t = {
-    topic_name: idea,
     theme_emotion: "溫暖療癒",
     scene_setting: "窗邊生活場景，留白、木桌、柔和日常感",
     lighting_style: "柔和暖光，空氣感，微微逆光",
@@ -264,7 +262,7 @@ function analyzeIdea(idea, unit, series) {
   return t;
 }
 
-function makeTitle(idea, topic, series) {
+function makeTitle(idea, series) {
   if (series.includes("早安")) return "今天，也慢慢開始";
   if (series.includes("晚安")) return "今晚，把心放輕一點";
   if (/累|焦慮/.test(idea)) return "今天不用急著變更好";
@@ -272,7 +270,7 @@ function makeTitle(idea, topic, series) {
   return idea.length <= 14 ? idea : idea.slice(0, 14);
 }
 
-function makeMainCopy(idea, topic, unit) {
+function makeMainCopy(idea, unit) {
   if (unit === "健康頻率") {
     return "當你覺得累，不一定是意志力不夠。\n也許只是大腦和神經系統，需要一點安靜的時間。\n慢慢呼吸，讓身體先回到安全感裡。";
   }
@@ -312,30 +310,16 @@ function makeFinalPrompt(u, t) {
 
 function renderResult(pkg) {
   const v = pkg.visual;
-
-  const fields = [
-    "content_title",
-    "main_copy",
-    "platform_copy",
-    "hashtags",
-    "final_prompt",
-    "shorts_cover_text",
-    "shorts_hook_text",
-    "emotion_trigger"
-  ];
+  const s = pkg.short;
 
   $("resultArea").innerHTML = `
     <div class="result-card">
-      ${fields
-        .map(
-          (k) => `
-          <div class="item">
-            <b>${k}</b>
-            <pre>${escapeHtml(v[k])}</pre>
-          </div>
-        `
-        )
-        .join("")}
+      <div class="item"><b>03｜content_title</b><pre>${escapeHtml(v.content_title)}</pre></div>
+      <div class="item"><b>03｜main_copy</b><pre>${escapeHtml(v.main_copy)}</pre></div>
+      <div class="item"><b>03｜final_prompt</b><pre>${escapeHtml(v.final_prompt)}</pre></div>
+      <div class="item"><b>04｜short_title</b><pre>${escapeHtml(s.short_title)}</pre></div>
+      <div class="item"><b>04｜opening_script</b><pre>${escapeHtml(s.opening_script)}</pre></div>
+      <div class="item"><b>04｜main_script</b><pre>${escapeHtml(s.main_script)}</pre></div>
     </div>
   `;
 }
@@ -345,6 +329,11 @@ async function writeToSheets() {
 
   const url = getGasUrl();
   if (!url) return alert("請先貼上 GAS Web App URL");
+
+  if (!latestPackage.short) {
+    alert("short 沒生成，請重新按生成內容包");
+    return;
+  }
 
   try {
     const res = await fetch(url, {
@@ -360,56 +349,31 @@ async function writeToSheets() {
 
     if (!data.ok) throw new Error(data.message || "寫入失敗");
 
-    setStatus("已寫入 Sheets");
+    setStatus("已寫入 03 與 04 Sheets");
   } catch (err) {
     setStatus("寫入失敗：" + err.message);
   }
 }
 
 function copyTSV() {
-
-  if (!latestPackage) {
-    return alert("請先生成內容包");
-  }
+  if (!latestPackage) return alert("請先生成內容包");
 
   const v = latestPackage.visual;
-
   const keys = Object.keys(v);
 
-  /* =========================
-     TSV 安全轉換
-  ========================= */
-
   const tsv = keys
-    .map((k) => {
-
-      return String(v[k] ?? "")
-
-        /* 真換行 → \\n */
+    .map((k) =>
+      String(v[k] ?? "")
         .replace(/\r?\n/g, "\\n")
-
-        /* Tab 避免炸欄位 */
         .replace(/\t/g, " ")
-
-        /* 多餘空白整理 */
-        .trim();
-
-    })
+        .trim()
+    )
     .join("\t");
 
   navigator.clipboard
     .writeText(tsv)
-    .then(() => {
-
-      setStatus("已複製 03 分頁 TSV（安全模式）");
-
-    })
-    .catch((err) => {
-
-      setStatus("複製失敗：" + err.message);
-
-    });
-
+    .then(() => setStatus("已複製 03 分頁 TSV（安全模式）"))
+    .catch((err) => setStatus("複製失敗：" + err.message));
 }
 
 function unitCode(unit) {
