@@ -5,142 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>幸福產圖指令工廠</title>
 
-<style>
-
-body{
-  margin:0;
-  background:#f6efe6;
-  font-family:"Noto Sans TC",sans-serif;
-  color:#4e4339;
-}
-
-.app{
-  display:grid;
-  grid-template-columns:320px 1fr 320px;
-  gap:20px;
-  padding:20px;
-  min-height:100vh;
-  box-sizing:border-box;
-}
-
-.card{
-  background:#fffaf4;
-  border-radius:28px;
-  padding:24px;
-  box-shadow:
-    0 12px 30px rgba(0,0,0,.06),
-    0 2px 8px rgba(0,0,0,.04);
-}
-
-h1{
-  margin-top:0;
-  margin-bottom:24px;
-  font-size:30px;
-  line-height:1.4;
-  color:#c38b4c;
-}
-
-h2{
-  margin-top:0;
-  margin-bottom:20px;
-  color:#c38b4c;
-}
-
-label{
-  display:block;
-  margin-top:18px;
-  margin-bottom:8px;
-  font-size:15px;
-  font-weight:700;
-  color:#6d5d4f;
-}
-
-input,
-select,
-textarea{
-  width:100%;
-  padding:15px;
-  border-radius:18px;
-  border:1px solid #eadbc8;
-  background:#fff;
-  box-sizing:border-box;
-  font-size:15px;
-  outline:none;
-  transition:.2s;
-  color:#4e4339;
-}
-
-input:focus,
-select:focus,
-textarea:focus{
-  border-color:#d8a268;
-  box-shadow:0 0 0 4px rgba(216,162,104,.15);
-}
-
-textarea{
-  min-height:120px;
-  resize:vertical;
-  line-height:1.7;
-}
-
-button{
-  width:100%;
-  margin-top:22px;
-  padding:16px;
-  border:none;
-  border-radius:20px;
-  background:#d89b5a;
-  color:white;
-  font-size:16px;
-  font-weight:700;
-  cursor:pointer;
-  transition:.2s;
-}
-
-button:hover{
-  transform:translateY(-1px);
-  opacity:.95;
-}
-
-#output{
-  background:white;
-  border-radius:22px;
-  padding:24px;
-  min-height:700px;
-  border:1px solid #eadbc8;
-  white-space:pre-wrap;
-  line-height:1.9;
-  overflow:auto;
-  font-size:15px;
-}
-
-.left{
-  position:sticky;
-  top:20px;
-  height:fit-content;
-}
-
-.right{
-  position:sticky;
-  top:20px;
-  height:fit-content;
-}
-
-@media(max-width:1200px){
-
-  .app{
-    grid-template-columns:1fr;
-  }
-
-  .left,
-  .right{
-    position:relative;
-    top:auto;
-  }
-
-}
-
-</style>
+<link rel="stylesheet" href="style.css"/>
 
 </head>
 
@@ -148,6 +13,7 @@ button:hover{
 
 <div class="app">
 
+<!-- 左側 -->
 <div class="left card">
 
 <h1>☀ 幸福產圖指令工廠</h1>
@@ -155,12 +21,14 @@ button:hover{
 <label>主題宇宙</label>
 
 <select id="unit">
+
 <option>幸福旅居</option>
 <option>生活感悟</option>
 <option>幸福教養</option>
 <option>幸福緣手作</option>
 <option>健康頻率生活好物</option>
 <option>智慧名片商業系</option>
+
 </select>
 
 <label>系列</label>
@@ -176,6 +44,17 @@ placeholder="例如：早安圖"
 id="topic"
 placeholder="例如：海邊晨光早餐"
 />
+
+<label>主題生成數量</label>
+
+<select id="topicCount">
+
+<option>10</option>
+<option selected>20</option>
+<option>30</option>
+<option>50</option>
+
+</select>
 
 <label>內容類型</label>
 
@@ -216,7 +95,7 @@ VISUAL_PROMPT｜視覺產圖指令
 </option>
 
 <option value="BATCH_IMAGE_PROMPT">
-BATCH_IMAGE_PROMPT｜批次產圖指令
+BATCH_IMAGE_PROMPT｜批次主題生成
 </option>
 
 <option value="SHORT_VIDEO_PROMPT">
@@ -256,18 +135,22 @@ SHORT_VIDEO_REFILL｜短影音回填指令
 <label>輸出比例</label>
 
 <select id="ratio">
+
 <option>9:16</option>
 <option>1:1</option>
 <option>4:5</option>
 <option>16:9</option>
+
 </select>
 
 <label>短影音秒數</label>
 
 <select id="duration">
+
 <option>20</option>
 <option>30</option>
 <option>40</option>
+
 </select>
 
 <label>補充靈感</label>
@@ -275,11 +158,14 @@ SHORT_VIDEO_REFILL｜短影音回填指令
 <textarea id="extra"></textarea>
 
 <button onclick="generatePrompt()">
+
 生成 AI 指令
+
 </button>
 
 </div>
 
+<!-- 中間 -->
 <div class="middle card">
 
 <h2>AI 指令輸出</h2>
@@ -287,11 +173,14 @@ SHORT_VIDEO_REFILL｜短影音回填指令
 <div id="output"></div>
 
 <button onclick="copyPrompt()">
+
 複製 Prompt
+
 </button>
 
 </div>
 
+<!-- 右側 -->
 <div class="right card">
 
 <h2>內容回填</h2>
@@ -302,266 +191,16 @@ placeholder="Google Drive 成品連結"
 />
 
 <button onclick="saveVisualContent()">
+
 儲存視覺內容
+
 </button>
 
 </div>
 
 </div>
 
-<script>
-
-const GAS_URL =
-"https://script.google.com/macros/s/AKfycbzGjQuix5THq44jWLmFWjuKsjes2crL6ys69mPQmXqng5nJBHlxCUHgSbsgxGepXcDgxg/exec";
-
-function generatePrompt(){
-
-const unit =
-document.getElementById("unit").value;
-
-const series =
-document.getElementById("series").value;
-
-const topic =
-document.getElementById("topic").value;
-
-const contentType =
-document.getElementById("contentType").value;
-
-const promptType =
-document.getElementById("promptType").value;
-
-const ratio =
-document.getElementById("ratio").value;
-
-const duration =
-document.getElementById("duration").value;
-
-const extra =
-document.getElementById("extra").value;
-
-let prompt = "";
-
-if(promptType === "BATCH_IMAGE_PROMPT"){
-
-prompt = `
-
-你是一位：
-
-「幸福生態圈 AI 批次產圖導演」。
-
-請為以下系列批次生成圖片素材。
-
-【主題宇宙】
-${unit}
-
-【系列】
-${series}
-
-【主題方向】
-${topic}
-
-【內容類型】
-${contentType}
-
-【輸出比例】
-${ratio}
-
-【補充靈感】
-${extra}
-
-請批次生成：
-
-20張同系列風格內容圖。
-
-畫面統一：
-
-✓ 日系成人療癒繪本風
-✓ 米白暖色系
-✓ 幸福感
-✓ 柔和暖光
-✓ 慢生活氛圍
-✓ 小太陽logo
-✓ 留白感
-✓ 適合 IG／Shorts／小紅書／FB
-
-每張請輸出：
-
-1. 圖片編號
-2. 主題名稱
-3. 畫面文案
-4. 畫面描述
-5. AI產圖提示詞
-6. 建議檔名
-
-`;
-
-}else{
-
-prompt = `
-
-你是一位：
-
-「幸福生態圈 AI 視覺內容導演」。
-
-【主題宇宙】
-${unit}
-
-【系列】
-${series}
-
-【主題】
-${topic}
-
-【內容類型】
-${contentType}
-
-【指令類型】
-${promptType}
-
-【輸出比例】
-${ratio}
-
-【短影音秒數】
-${duration}秒
-
-【補充靈感】
-${extra}
-
-請生成：
-
-適合：
-
-IG
-TikTok
-Shorts
-FB
-小紅書
-
-同步發佈的幸福感內容。
-
-畫面風格：
-
-✓ 日系成人療癒
-✓ 米白暖色系
-✓ 繪本風
-✓ 幸福感
-✓ 留白感
-✓ 小太陽logo
-✓ 可直接搭配音樂做短影音
-
-請輸出：
-
-1. 主標題
-2. 畫面文案
-3. AI產圖提示詞
-4. 音樂氛圍
-5. 平台文案
-6. Hashtag
-
-`;
-
-}
-
-document.getElementById("output").innerText = prompt;
-
-}
-
-function copyPrompt(){
-
-const text =
-document.getElementById("output").innerText;
-
-navigator.clipboard.writeText(text);
-
-alert("已複製 Prompt");
-
-}
-
-async function saveVisualContent(){
-
-const unit =
-document.getElementById("unit").value;
-
-const series =
-document.getElementById("series").value;
-
-const topic =
-document.getElementById("topic").value;
-
-const contentType =
-document.getElementById("contentType").value;
-
-const prompt =
-document.getElementById("output").innerText;
-
-const driveLink =
-document.getElementById("driveLink").value;
-
-const body = {
-
-action:"saveVisualContent",
-
-unit:unit,
-
-series_name:series,
-
-topic_name:topic,
-
-content_type:contentType,
-
-content_title:topic,
-
-main_copy:"",
-
-visual_style:"幸福感療癒繪本風",
-
-layout_type:"POSTER",
-
-image_prompt:prompt,
-
-output_ratio:
-document.getElementById("ratio").value,
-
-music_style:"溫暖療癒",
-
-voice_style:"",
-
-publish_group:
-unit + "全平台",
-
-drive_link:driveLink,
-
-status:"已產圖",
-
-notes:""
-
-};
-
-try{
-
-const res = await fetch(GAS_URL,{
-method:"POST",
-body:JSON.stringify(body)
-});
-
-const data = await res.json();
-
-console.log(data);
-
-alert("已儲存成功");
-
-}catch(err){
-
-console.error(err);
-
-alert("儲存失敗");
-
-}
-
-}
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
