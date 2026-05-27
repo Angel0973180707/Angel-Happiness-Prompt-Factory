@@ -1,146 +1,146 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>幸福產圖指令工廠</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>幸福產圖指令工廠</title>
 
-  <style>
+<style>
 
-    body{
-      margin:0;
-      background:#f6efe6;
-      font-family:"Noto Sans TC",sans-serif;
-      color:#4e4339;
-    }
+body{
+  margin:0;
+  background:#f6efe6;
+  font-family:"Noto Sans TC",sans-serif;
+  color:#4e4339;
+}
 
-    .app{
-      display:grid;
-      grid-template-columns:320px 1fr 320px;
-      gap:20px;
-      padding:20px;
-      min-height:100vh;
-      box-sizing:border-box;
-    }
+.app{
+  display:grid;
+  grid-template-columns:320px 1fr 320px;
+  gap:20px;
+  padding:20px;
+  min-height:100vh;
+  box-sizing:border-box;
+}
 
-    .card{
-      background:#fffaf4;
-      border-radius:28px;
-      padding:24px;
-      box-shadow:
-        0 12px 30px rgba(0,0,0,.06),
-        0 2px 8px rgba(0,0,0,.04);
-    }
+.card{
+  background:#fffaf4;
+  border-radius:28px;
+  padding:24px;
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.06),
+    0 2px 8px rgba(0,0,0,.04);
+}
 
-    h1{
-      margin-top:0;
-      margin-bottom:24px;
-      font-size:30px;
-      line-height:1.4;
-      color:#c38b4c;
-    }
+h1{
+  margin-top:0;
+  margin-bottom:24px;
+  font-size:30px;
+  line-height:1.4;
+  color:#c38b4c;
+}
 
-    h2{
-      margin-top:0;
-      margin-bottom:20px;
-      color:#c38b4c;
-    }
+h2{
+  margin-top:0;
+  margin-bottom:20px;
+  color:#c38b4c;
+}
 
-    label{
-      display:block;
-      margin-top:18px;
-      margin-bottom:8px;
-      font-size:15px;
-      font-weight:700;
-      color:#6d5d4f;
-    }
+label{
+  display:block;
+  margin-top:18px;
+  margin-bottom:8px;
+  font-size:15px;
+  font-weight:700;
+  color:#6d5d4f;
+}
 
-    input,
-    select,
-    textarea{
-      width:100%;
-      padding:15px;
-      border-radius:18px;
-      border:1px solid #eadbc8;
-      background:#fff;
-      box-sizing:border-box;
-      font-size:15px;
-      outline:none;
-      transition:.2s;
-      color:#4e4339;
-    }
+input,
+select,
+textarea{
+  width:100%;
+  padding:15px;
+  border-radius:18px;
+  border:1px solid #eadbc8;
+  background:#fff;
+  box-sizing:border-box;
+  font-size:15px;
+  outline:none;
+  transition:.2s;
+  color:#4e4339;
+}
 
-    input:focus,
-    select:focus,
-    textarea:focus{
-      border-color:#d8a268;
-      box-shadow:0 0 0 4px rgba(216,162,104,.15);
-    }
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:#d8a268;
+  box-shadow:0 0 0 4px rgba(216,162,104,.15);
+}
 
-    textarea{
-      min-height:120px;
-      resize:vertical;
-      line-height:1.7;
-    }
+textarea{
+  min-height:120px;
+  resize:vertical;
+  line-height:1.7;
+}
 
-    button{
-      width:100%;
-      margin-top:22px;
-      padding:16px;
-      border:none;
-      border-radius:20px;
-      background:#d89b5a;
-      color:white;
-      font-size:16px;
-      font-weight:700;
-      cursor:pointer;
-      transition:.2s;
-    }
+button{
+  width:100%;
+  margin-top:22px;
+  padding:16px;
+  border:none;
+  border-radius:20px;
+  background:#d89b5a;
+  color:white;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
 
-    button:hover{
-      transform:translateY(-1px);
-      opacity:.95;
-    }
+button:hover{
+  transform:translateY(-1px);
+  opacity:.95;
+}
 
-    #output{
-      background:white;
-      border-radius:22px;
-      padding:24px;
-      min-height:650px;
-      border:1px solid #eadbc8;
-      white-space:pre-wrap;
-      line-height:1.9;
-      overflow:auto;
-      font-size:15px;
-    }
+#output{
+  background:white;
+  border-radius:22px;
+  padding:24px;
+  min-height:700px;
+  border:1px solid #eadbc8;
+  white-space:pre-wrap;
+  line-height:1.9;
+  overflow:auto;
+  font-size:15px;
+}
 
-    .left{
-      position:sticky;
-      top:20px;
-      height:fit-content;
-    }
+.left{
+  position:sticky;
+  top:20px;
+  height:fit-content;
+}
 
-    .right{
-      position:sticky;
-      top:20px;
-      height:fit-content;
-    }
+.right{
+  position:sticky;
+  top:20px;
+  height:fit-content;
+}
 
-    @media(max-width:1200px){
+@media(max-width:1200px){
 
-      .app{
-        grid-template-columns:1fr;
-      }
+  .app{
+    grid-template-columns:1fr;
+  }
 
-      .left,
-      .right{
-        position:relative;
-        top:auto;
-      }
+  .left,
+  .right{
+    position:relative;
+    top:auto;
+  }
 
-    }
+}
 
-  </style>
+</style>
 
 </head>
 
@@ -148,160 +148,164 @@
 
 <div class="app">
 
-  <div class="left card">
+<div class="left card">
 
-    <h1>☀ 幸福產圖指令工廠</h1>
+<h1>☀ 幸福產圖指令工廠</h1>
 
-    <label>主題宇宙</label>
+<label>主題宇宙</label>
 
-    <select id="unit">
-      <option>幸福旅居</option>
-      <option>生活感悟</option>
-      <option>幸福教養</option>
-      <option>幸福緣手作</option>
-      <option>健康頻率生活好物</option>
-      <option>智慧名片商業系</option>
-    </select>
+<select id="unit">
+<option>幸福旅居</option>
+<option>生活感悟</option>
+<option>幸福教養</option>
+<option>幸福緣手作</option>
+<option>健康頻率生活好物</option>
+<option>智慧名片商業系</option>
+</select>
 
-    <label>系列</label>
+<label>系列</label>
 
-    <input
-      id="series"
-      placeholder="例如：早安圖"
-    >
+<input
+id="series"
+placeholder="例如：早安圖"
+/>
 
-    <label>主題</label>
+<label>主題</label>
 
-    <input
-      id="topic"
-      placeholder="例如：海邊晨光早餐"
-    >
+<input
+id="topic"
+placeholder="例如：海邊晨光早餐"
+/>
 
-    <label>內容類型</label>
+<label>內容類型</label>
 
-    <select id="contentType">
+<select id="contentType">
 
-      <option value="POSTER_SINGLE">
-        POSTER_SINGLE｜單張療癒圖文
-      </option>
+<option value="POSTER_SINGLE">
+POSTER_SINGLE｜單張療癒圖文
+</option>
 
-      <option value="INFO_STORY_BOARD">
-        INFO_STORY_BOARD｜分隔資訊圖文
-      </option>
+<option value="INFO_STORY_BOARD">
+INFO_STORY_BOARD｜分隔資訊圖文
+</option>
 
-      <option value="EVENT_POSTER">
-        EVENT_POSTER｜活動文宣海報
-      </option>
+<option value="EVENT_POSTER">
+EVENT_POSTER｜活動文宣海報
+</option>
 
-      <option value="PRODUCT_POSTER">
-        PRODUCT_POSTER｜商品宣傳海報
-      </option>
+<option value="PRODUCT_POSTER">
+PRODUCT_POSTER｜商品宣傳海報
+</option>
 
-      <option value="RECIPE_BOARD">
-        RECIPE_BOARD｜料理食譜圖板
-      </option>
+<option value="RECIPE_BOARD">
+RECIPE_BOARD｜料理食譜圖板
+</option>
 
-      <option value="SHORTS_POSTER">
-        SHORTS_POSTER｜短影音封面圖
-      </option>
+<option value="SHORTS_POSTER">
+SHORTS_POSTER｜短影音封面圖
+</option>
 
-    </select>
+</select>
 
-    <label>指令類型</label>
+<label>指令類型</label>
 
-    <select id="promptType">
+<select id="promptType">
 
-      <option value="VISUAL_PROMPT">
-        VISUAL_PROMPT｜視覺產圖指令
-      </option>
+<option value="VISUAL_PROMPT">
+VISUAL_PROMPT｜視覺產圖指令
+</option>
 
-      <option value="SHORT_VIDEO_PROMPT">
-        SHORT_VIDEO_PROMPT｜短影音素材指令
-      </option>
+<option value="BATCH_IMAGE_PROMPT">
+BATCH_IMAGE_PROMPT｜批次產圖指令
+</option>
 
-      <option value="SERIES_EXPANSION">
-        SERIES_EXPANSION｜系列擴充指令
-      </option>
+<option value="SHORT_VIDEO_PROMPT">
+SHORT_VIDEO_PROMPT｜短影音素材指令
+</option>
 
-      <option value="TOPIC_GENERATION">
-        TOPIC_GENERATION｜主題生成指令
-      </option>
+<option value="SERIES_EXPANSION">
+SERIES_EXPANSION｜系列擴充指令
+</option>
 
-      <option value="PLATFORM_COPY">
-        PLATFORM_COPY｜多平台文案指令
-      </option>
+<option value="TOPIC_GENERATION">
+TOPIC_GENERATION｜主題生成指令
+</option>
 
-      <option value="SERIES_REFILL">
-        SERIES_REFILL｜系列回填指令
-      </option>
+<option value="PLATFORM_COPY">
+PLATFORM_COPY｜多平台文案指令
+</option>
 
-      <option value="TOPIC_REFILL">
-        TOPIC_REFILL｜主題回填指令
-      </option>
+<option value="SERIES_REFILL">
+SERIES_REFILL｜系列回填指令
+</option>
 
-      <option value="VISUAL_REFILL">
-        VISUAL_REFILL｜視覺內容回填指令
-      </option>
+<option value="TOPIC_REFILL">
+TOPIC_REFILL｜主題回填指令
+</option>
 
-      <option value="SHORT_VIDEO_REFILL">
-        SHORT_VIDEO_REFILL｜短影音回填指令
-      </option>
+<option value="VISUAL_REFILL">
+VISUAL_REFILL｜視覺內容回填指令
+</option>
 
-    </select>
+<option value="SHORT_VIDEO_REFILL">
+SHORT_VIDEO_REFILL｜短影音回填指令
+</option>
 
-    <label>輸出比例</label>
+</select>
 
-    <select id="ratio">
-      <option>9:16</option>
-      <option>1:1</option>
-      <option>4:5</option>
-      <option>16:9</option>
-    </select>
+<label>輸出比例</label>
 
-    <label>短影音秒數</label>
+<select id="ratio">
+<option>9:16</option>
+<option>1:1</option>
+<option>4:5</option>
+<option>16:9</option>
+</select>
 
-    <select id="duration">
-      <option>20</option>
-      <option>30</option>
-      <option>40</option>
-    </select>
+<label>短影音秒數</label>
 
-    <label>補充靈感</label>
+<select id="duration">
+<option>20</option>
+<option>30</option>
+<option>40</option>
+</select>
 
-    <textarea id="extra"></textarea>
+<label>補充靈感</label>
 
-    <button onclick="generatePrompt()">
-      生成 AI 指令
-    </button>
+<textarea id="extra"></textarea>
 
-  </div>
+<button onclick="generatePrompt()">
+生成 AI 指令
+</button>
 
-  <div class="middle card">
+</div>
 
-    <h2>AI 指令輸出</h2>
+<div class="middle card">
 
-    <div id="output"></div>
+<h2>AI 指令輸出</h2>
 
-    <button onclick="copyPrompt()">
-      複製 Prompt
-    </button>
+<div id="output"></div>
 
-  </div>
+<button onclick="copyPrompt()">
+複製 Prompt
+</button>
 
-  <div class="right card">
+</div>
 
-    <h2>內容回填</h2>
+<div class="right card">
 
-    <input
-      id="driveLink"
-      placeholder="Google Drive 連結"
-    >
+<h2>內容回填</h2>
 
-    <button onclick="saveVisualContent()">
-      儲存視覺內容
-    </button>
+<input
+id="driveLink"
+placeholder="Google Drive 成品連結"
+/>
 
-  </div>
+<button onclick="saveVisualContent()">
+儲存視覺內容
+</button>
+
+</div>
 
 </div>
 
@@ -312,31 +316,89 @@ const GAS_URL =
 
 function generatePrompt(){
 
-  const unit =
-    document.getElementById("unit").value;
+const unit =
+document.getElementById("unit").value;
 
-  const series =
-    document.getElementById("series").value;
+const series =
+document.getElementById("series").value;
 
-  const topic =
-    document.getElementById("topic").value;
+const topic =
+document.getElementById("topic").value;
 
-  const contentType =
-    document.getElementById("contentType").value;
+const contentType =
+document.getElementById("contentType").value;
 
-  const promptType =
-    document.getElementById("promptType").value;
+const promptType =
+document.getElementById("promptType").value;
 
-  const ratio =
-    document.getElementById("ratio").value;
+const ratio =
+document.getElementById("ratio").value;
 
-  const duration =
-    document.getElementById("duration").value;
+const duration =
+document.getElementById("duration").value;
 
-  const extra =
-    document.getElementById("extra").value;
+const extra =
+document.getElementById("extra").value;
 
-  const prompt = `
+let prompt = "";
+
+if(promptType === "BATCH_IMAGE_PROMPT"){
+
+prompt = `
+
+你是一位：
+
+「幸福生態圈 AI 批次產圖導演」。
+
+請為以下系列批次生成圖片素材。
+
+【主題宇宙】
+${unit}
+
+【系列】
+${series}
+
+【主題方向】
+${topic}
+
+【內容類型】
+${contentType}
+
+【輸出比例】
+${ratio}
+
+【補充靈感】
+${extra}
+
+請批次生成：
+
+20張同系列風格內容圖。
+
+畫面統一：
+
+✓ 日系成人療癒繪本風
+✓ 米白暖色系
+✓ 幸福感
+✓ 柔和暖光
+✓ 慢生活氛圍
+✓ 小太陽logo
+✓ 留白感
+✓ 適合 IG／Shorts／小紅書／FB
+
+每張請輸出：
+
+1. 圖片編號
+2. 主題名稱
+3. 畫面文案
+4. 畫面描述
+5. AI產圖提示詞
+6. 建議檔名
+
+`;
+
+}else{
+
+prompt = `
 
 你是一位：
 
@@ -399,105 +461,103 @@ FB
 
 `;
 
-  document.getElementById("output")
-    .innerText = prompt;
+}
+
+document.getElementById("output").innerText = prompt;
 
 }
 
 function copyPrompt(){
 
-  const text =
-    document.getElementById("output")
-      .innerText;
+const text =
+document.getElementById("output").innerText;
 
-  navigator.clipboard.writeText(text);
+navigator.clipboard.writeText(text);
 
-  alert("已複製 Prompt");
+alert("已複製 Prompt");
 
 }
 
 async function saveVisualContent(){
 
-  const unit =
-    document.getElementById("unit").value;
+const unit =
+document.getElementById("unit").value;
 
-  const series =
-    document.getElementById("series").value;
+const series =
+document.getElementById("series").value;
 
-  const topic =
-    document.getElementById("topic").value;
+const topic =
+document.getElementById("topic").value;
 
-  const contentType =
-    document.getElementById("contentType").value;
+const contentType =
+document.getElementById("contentType").value;
 
-  const prompt =
-    document.getElementById("output")
-      .innerText;
+const prompt =
+document.getElementById("output").innerText;
 
-  const driveLink =
-    document.getElementById("driveLink")
-      .value;
+const driveLink =
+document.getElementById("driveLink").value;
 
-  const body = {
+const body = {
 
-    action:"saveVisualContent",
+action:"saveVisualContent",
 
-    unit:unit,
+unit:unit,
 
-    series_name:series,
+series_name:series,
 
-    topic_name:topic,
+topic_name:topic,
 
-    content_type:contentType,
+content_type:contentType,
 
-    content_title:topic,
+content_title:topic,
 
-    main_copy:"",
+main_copy:"",
 
-    visual_style:"幸福感療癒繪本風",
+visual_style:"幸福感療癒繪本風",
 
-    layout_type:"POSTER",
+layout_type:"POSTER",
 
-    image_prompt:prompt,
+image_prompt:prompt,
 
-    output_ratio:
-      document.getElementById("ratio").value,
+output_ratio:
+document.getElementById("ratio").value,
 
-    music_style:"溫暖療癒",
+music_style:"溫暖療癒",
 
-    voice_style:"",
+voice_style:"",
 
-    publish_group:
-      unit + "全平台",
+publish_group:
+unit + "全平台",
 
-    drive_link:driveLink,
+drive_link:driveLink,
 
-    status:"已產圖",
+status:"已產圖",
 
-    notes:""
+notes:""
 
-  };
+};
 
-  try{
+try{
 
-    const res = await fetch(GAS_URL,{
-      method:"POST",
-      body:JSON.stringify(body)
-    });
+const res = await fetch(GAS_URL,{
+method:"POST",
+body:JSON.stringify(body)
+});
 
-    const data = await res.json();
+const data = await res.json();
 
-    console.log(data);
+console.log(data);
 
-    alert("已儲存成功");
+alert("已儲存成功");
 
-  }catch(err){
+}catch(err){
 
-    console.error(err);
+console.error(err);
 
-    alert("儲存失敗");
+alert("儲存失敗");
 
-  }
+}
 
 }
 
