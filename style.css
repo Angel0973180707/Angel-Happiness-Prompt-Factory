@@ -7,6 +7,7 @@
   --brand: #f0a04b;
   --brand-dark: #b96c20;
   --green: #718b5c;
+  --soft: #fff4e4;
 }
 
 * {
@@ -51,8 +52,11 @@ h2 {
   font-size: 22px;
 }
 
-.hero p,
-.hint {
+h3 {
+  margin: 0 0 12px;
+}
+
+.hero p {
   margin: 0;
   color: var(--muted);
   line-height: 1.8;
@@ -92,7 +96,7 @@ textarea {
 }
 
 textarea {
-  min-height: 120px;
+  min-height: 130px;
   resize: vertical;
   line-height: 1.7;
 }
@@ -102,6 +106,12 @@ textarea {
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-top: 16px;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
 }
 
 button {
@@ -121,10 +131,8 @@ button.secondary {
   border: 1px solid var(--line);
 }
 
-.mode-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
+button.accent {
+  background: var(--green);
 }
 
 .mode-card {
@@ -135,23 +143,23 @@ button.secondary {
   padding: 18px;
 }
 
-.mode-card.active {
-  background: #fff1d8;
-  border: 2px solid var(--brand);
-}
-
 .mode-card b {
   display: block;
+  font-size: 18px;
   color: var(--brand-dark);
   margin-bottom: 8px;
-  font-size: 18px;
 }
 
 .mode-card span {
   display: block;
   color: var(--muted);
-  line-height: 1.6;
   font-weight: 500;
+  line-height: 1.6;
+}
+
+.mode-card.active {
+  background: #fff0d7;
+  border: 2px solid var(--brand);
 }
 
 .status {
@@ -161,10 +169,11 @@ button.secondary {
 
 .empty {
   color: var(--muted);
+  line-height: 1.8;
 }
 
 .result-card,
-.prompt-list {
+.prompt-grid {
   display: grid;
   gap: 14px;
 }
@@ -195,26 +204,28 @@ button.secondary {
 
 .copy-btn {
   margin-top: 12px;
+  width: 100%;
   background: var(--green);
 }
 
 .analysis-card {
-  background: #fff;
+  background: #fffaf4;
+  border: 1px solid var(--line);
   border-radius: 20px;
   padding: 20px;
-  margin-top: 20px;
-  box-shadow: 0 4px 18px rgba(0,0,0,.08);
+  margin-top: 0;
 }
 
 .score-grid {
   display: grid;
-  grid-template-columns: repeat(4,1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin: 20px 0;
 }
 
 .score-item {
-  background: #f7f7f7;
+  background: #fff;
+  border: 1px solid var(--line);
   border-radius: 14px;
   padding: 12px;
   text-align: center;
