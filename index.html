@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>幸福生態圈 AI 控制台 v4.5</title>
+  <title>幸福生態圈 AI Content OS v5.2</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="app">
     <header class="hero">
       <p class="eyebrow">Happiness Ecosystem AI OS</p>
-      <h1>幸福生態圈 AI 控制台 v4.5</h1>
-      <p>故事 → YouTube 長影片 → Shorts → 圖文素材 → 多平台導流。</p>
+      <h1>幸福生態圈 AI Content OS v5.2</h1>
+      <p>雙模式內容宇宙｜宇宙靈感 × 故事長影片 × AI協作指令包。</p>
     </header>
 
     <section class="panel">
@@ -23,14 +23,55 @@
       <div class="grid">
         <button id="saveConfigBtn">儲存設定</button>
         <button id="testBtn" class="secondary">測試連線</button>
-        <button id="loadSeriesBtn" class="secondary">讀取故事</button>
+        <button id="loadDataBtn" class="secondary">讀取資料</button>
       </div>
 
       <p id="statusText" class="status">尚未連線</p>
     </section>
 
     <section class="panel">
-      <h2>② 選擇故事</h2>
+      <h2>② 選擇創作模式</h2>
+
+      <div class="mode-grid">
+        <button id="universeModeBtn" class="mode-card active" type="button">
+          <b>宇宙靈感模式</b>
+          <span>選系列 → 輸入靈感 → 生成圖文＋Shorts＋AI產圖指令</span>
+        </button>
+
+        <button id="storyModeBtn" class="mode-card" type="button">
+          <b>故事長影片模式</b>
+          <span>選故事 → 長影片 → Shorts裂變 → 圖文 → AI協作指令包</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="universePanel" class="panel">
+      <h2>③ 宇宙靈感模式</h2>
+
+      <label>系列宇宙</label>
+      <select id="seriesSelect">
+        <option value="">請先讀取系列</option>
+      </select>
+
+      <label>靈感／主題句</label>
+      <textarea id="inspirationInput" placeholder="例如：幸福就在簡單的日常裡；或：大人先穩住，孩子才有空間回來。"></textarea>
+
+      <label>內容目標</label>
+      <select id="trafficGoalSelect">
+        <option value="日更曝光">日更曝光</option>
+        <option value="導流長影片">導流長影片</option>
+        <option value="導流LINE">導流LINE</option>
+        <option value="導流PWA工具">導流PWA工具</option>
+        <option value="品牌信任感">品牌信任感</option>
+      </select>
+
+      <div class="grid">
+        <button id="generateUniverseBtn">生成宇宙AI協作指令</button>
+      </div>
+    </section>
+
+    <section id="storyPanel" class="panel hidden">
+      <h2>③ 故事長影片模式</h2>
 
       <label>故事素材</label>
       <select id="storySelect">
@@ -38,13 +79,19 @@
       </select>
 
       <div class="grid">
-        <button id="generateAllBtn">生成內容宇宙</button>
+        <button id="generateAllBtn">生成故事內容宇宙</button>
       </div>
     </section>
 
     <section class="panel result">
-      <h2>③ 生成結果</h2>
+      <h2>④ 生成結果</h2>
       <div id="output" class="empty">尚未生成內容</div>
+    </section>
+
+    <section class="panel">
+      <h2>⑤ AI 協作指令包</h2>
+      <p class="hint">產出的指令可複製到 ChatGPT、Claude、Gemini、Canva AI、NotebookLM 使用。</p>
+      <div id="promptOutput" class="empty">尚未產生 AI 協作指令</div>
     </section>
   </main>
 
