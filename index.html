@@ -3,76 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>幸福生態圈｜靈感輸入控制台 v1</title>
+  <title>幸福生態圈 AI 控制台 v3-lite</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="app">
     <header class="hero">
-      <div class="sun-logo">☀</div>
-      <p class="eyebrow">幸福生態圈 AI OS</p>
-      <h1>幸福靈感輸入控制台</h1>
-      <p class="subtitle">一句靈感 → 主題解析 → 視覺導演 → 產圖指令 → 可貼回 Sheets</p>
+      <p class="eyebrow">Happiness Ecosystem AI Console</p>
+      <h1>幸福生態圈 AI 控制台 v3-lite</h1>
+      <p>輸入一句靈感，系統自動生成內容包、視覺導演 Prompt、Shorts Hook，並可回填 Google Sheets。</p>
     </header>
 
-    <section class="panel idea-box">
-      <h2>✨ 幸福靈感輸入</h2>
-      <label>靈感一句話</label>
+    <section class="panel">
+      <h2>① 系統設定</h2>
+
+      <label>GAS Web App URL</label>
+      <input id="gasUrl" placeholder="貼上 GAS 部署網址 /exec" />
+
+      <div class="grid">
+        <button id="saveConfigBtn">儲存設定</button>
+        <button id="testBtn" class="secondary">測試連線</button>
+        <button id="loadSeriesBtn" class="secondary">讀取系列</button>
+      </div>
+
+      <p id="statusText" class="status">尚未連線</p>
+    </section>
+
+    <section class="panel">
+      <h2>② 幸福靈感輸入</h2>
+
+      <label>主題宇宙</label>
+      <select id="unitSelect">
+        <option value="幸福旅居">幸福旅居</option>
+        <option value="幸福教養">幸福教養</option>
+        <option value="健康頻率">健康頻率</option>
+        <option value="生活好物">生活好物</option>
+        <option value="幸福緣手作">幸福緣手作</option>
+        <option value="智慧名片商業系">智慧名片商業系</option>
+      </select>
+
+      <label>系列名稱</label>
+      <select id="seriesSelect">
+        <option value="早安圖">早安圖</option>
+        <option value="晚安圖">晚安圖</option>
+        <option value="生命旅居">生命旅居</option>
+        <option value="慢生活">慢生活</option>
+        <option value="情緒教養">情緒教養</option>
+        <option value="睡眠療癒">睡眠療癒</option>
+        <option value="療癒小物">療癒小物</option>
+        <option value="料理食譜板">料理食譜板</option>
+        <option value="品牌導流">品牌導流</option>
+      </select>
+
+      <label>一句靈感</label>
       <textarea id="ideaInput" placeholder="例如：今天不用急著變更好"></textarea>
 
-      <div class="grid two">
-        <div>
-          <label>主題宇宙</label>
-          <select id="unitSelect">
-            <option value="幸福旅居">幸福旅居</option>
-            <option value="幸福緣手作">幸福緣手作</option>
-            <option value="生活感悟">生活感悟</option>
-            <option value="幸福教養">幸福教養</option>
-            <option value="健康頻率">健康頻率</option>
-            <option value="生活好物">生活好物</option>
-            <option value="智慧名片商業系">智慧名片商業系</option>
-          </select>
-        </div>
-        <div>
-          <label>系列名稱</label>
-          <select id="seriesSelect">
-            <option value="自動判斷">自動判斷</option>
-            <option value="早安圖">早安圖</option>
-            <option value="晚安圖">晚安圖</option>
-            <option value="生命旅居">生命旅居</option>
-            <option value="慢生活">慢生活</option>
-            <option value="料理食譜板">料理食譜板</option>
-            <option value="人生金句">人生金句</option>
-            <option value="情緒教養">情緒教養</option>
-            <option value="睡眠療癒">睡眠療癒</option>
-            <option value="療癒小物">療癒小物</option>
-            <option value="品牌導流">品牌導流</option>
-          </select>
-        </div>
+      <div class="grid">
+        <button id="generateBtn">生成內容包</button>
+        <button id="copyBtn" class="secondary">複製 03 TSV</button>
+        <button id="writeBtn" class="accent">寫入 Sheets</button>
       </div>
-
-      <button id="generateIdeaBtn">生成幸福內容</button>
     </section>
 
-    <section class="panel" id="resultPanel" hidden>
-      <h2>🧭 AI 解析結果</h2>
-      <div id="ideaResult" class="result-card"></div>
-    </section>
-
-    <section class="panel" id="sheetPanel" hidden>
-      <h2>📋 可貼回 Sheets</h2>
-      <div class="tabs">
-        <button class="tab active" data-target="topicTsv">02_topic_library</button>
-        <button class="tab" data-target="visualTsv">03_visual_content_library</button>
-      </div>
-
-      <div class="copy-row">
-        <button id="copyCurrentBtn">複製目前內容</button>
-        <button id="downloadTsvBtn">下載 TSV</button>
-      </div>
-
-      <textarea id="topicTsv" class="tsv-box" readonly></textarea>
-      <textarea id="visualTsv" class="tsv-box" readonly hidden></textarea>
+    <section class="panel result">
+      <h2>③ 生成結果</h2>
+      <div id="resultArea" class="empty">尚未生成內容</div>
     </section>
   </main>
 
