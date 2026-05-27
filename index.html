@@ -4,254 +4,120 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>幸福產圖指令工廠</title>
-
 <link rel="stylesheet" href="style.css"/>
-
 </head>
 
 <body>
-
 <div class="app">
 
-  <!-- 左側控制 -->
   <div class="left card">
-
     <h1>☀ 幸福產圖指令工廠</h1>
 
-    <!-- 主題宇宙 -->
     <label>主題宇宙</label>
-
-    <select id="unit">
-
+    <select id="unit" onchange="renderSeriesOptions()">
       <option>幸福旅居</option>
       <option>生活感悟</option>
       <option>幸福教養</option>
       <option>幸福緣手作</option>
       <option>健康頻率生活好物</option>
       <option>智慧名片商業系</option>
-
     </select>
 
-    <!-- 系列 -->
     <label>系列</label>
-
     <select id="series">
       <option value="">請選擇系列</option>
     </select>
 
-    <!-- 主題 -->
     <label>主題</label>
+    <input id="topic" placeholder="例如：海邊晨光早餐"/>
 
-    <input
-      id="topic"
-      placeholder="例如：海邊晨光早餐"
-    />
-
-    <!-- 主題生成數量 -->
     <label>主題生成數量</label>
-
     <select id="topicCount">
-
       <option>10</option>
       <option selected>20</option>
       <option>30</option>
       <option>50</option>
-
     </select>
 
-    <!-- 內容類型 -->
     <label>內容類型</label>
-
     <select id="contentType">
-
-      <option value="POSTER_SINGLE">
-        POSTER_SINGLE｜單張療癒圖文
-      </option>
-
-      <option value="INFO_STORY_BOARD">
-        INFO_STORY_BOARD｜分隔資訊圖文
-      </option>
-
-      <option value="EVENT_POSTER">
-        EVENT_POSTER｜活動文宣海報
-      </option>
-
-      <option value="PRODUCT_POSTER">
-        PRODUCT_POSTER｜商品宣傳海報
-      </option>
-
-      <option value="RECIPE_BOARD">
-        RECIPE_BOARD｜料理食譜圖板
-      </option>
-
-      <option value="SHORTS_POSTER">
-        SHORTS_POSTER｜短影音封面圖
-      </option>
-
+      <option value="POSTER_SINGLE">POSTER_SINGLE｜單張療癒圖文</option>
+      <option value="INFO_STORY_BOARD">INFO_STORY_BOARD｜分隔資訊圖文</option>
+      <option value="EVENT_POSTER">EVENT_POSTER｜活動文宣海報</option>
+      <option value="PRODUCT_POSTER">PRODUCT_POSTER｜商品宣傳海報</option>
+      <option value="RECIPE_BOARD">RECIPE_BOARD｜料理食譜圖板</option>
+      <option value="SHORTS_POSTER">SHORTS_POSTER｜短影音封面圖</option>
     </select>
 
-    <!-- 指令類型 -->
     <label>指令類型</label>
-
     <select id="promptType">
-
-      <option value="VISUAL_PROMPT">
-        VISUAL_PROMPT｜視覺產圖指令
-      </option>
-
-      <option value="BATCH_IMAGE_PROMPT">
-        BATCH_IMAGE_PROMPT｜批次主題生成
-      </option>
-
-      <option value="SHORT_VIDEO_PROMPT">
-        SHORT_VIDEO_PROMPT｜短影音素材指令
-      </option>
-
-      <option value="SERIES_EXPANSION">
-        SERIES_EXPANSION｜系列擴充指令
-      </option>
-
-      <option value="TOPIC_GENERATION">
-        TOPIC_GENERATION｜主題生成指令
-      </option>
-
-      <option value="PLATFORM_COPY">
-        PLATFORM_COPY｜多平台文案指令
-      </option>
-
-      <option value="SERIES_REFILL">
-        SERIES_REFILL｜系列回填指令
-      </option>
-
-      <option value="TOPIC_REFILL">
-        TOPIC_REFILL｜主題回填指令
-      </option>
-
-      <option value="VISUAL_REFILL">
-        VISUAL_REFILL｜視覺內容回填指令
-      </option>
-
-      <option value="SHORT_VIDEO_REFILL">
-        SHORT_VIDEO_REFILL｜短影音回填指令
-      </option>
-
+      <option value="VISUAL_PROMPT">VISUAL_PROMPT｜視覺產圖指令</option>
+      <option value="BATCH_IMAGE_PROMPT">BATCH_IMAGE_PROMPT｜批次主題生成</option>
+      <option value="SHORT_VIDEO_PROMPT">SHORT_VIDEO_PROMPT｜短影音素材指令</option>
+      <option value="SERIES_EXPANSION">SERIES_EXPANSION｜系列擴充指令</option>
+      <option value="TOPIC_GENERATION">TOPIC_GENERATION｜主題生成指令</option>
+      <option value="PLATFORM_COPY">PLATFORM_COPY｜多平台文案指令</option>
     </select>
 
-    <!-- 比例 -->
     <label>輸出比例</label>
-
     <select id="ratio">
-
       <option>9:16</option>
       <option>1:1</option>
       <option>4:5</option>
       <option>16:9</option>
-
     </select>
 
-    <!-- 短影音秒數 -->
     <label>短影音秒數</label>
-
     <select id="duration">
-
       <option>20</option>
       <option>30</option>
       <option>40</option>
-
     </select>
 
-    <!-- 補充靈感 -->
     <label>補充靈感</label>
+    <textarea id="extra" placeholder="例如：海邊慢生活、晨光早餐、療癒感..."></textarea>
 
-    <textarea
-      id="extra"
-      placeholder="例如：海邊慢生活、晨光早餐、療癒感..."
-    ></textarea>
-
-    <!-- 按鈕 -->
-    <button onclick="generatePrompt()">
-
-      生成 AI 指令
-
-    </button>
-
+    <button onclick="generatePrompt()">生成 AI 指令</button>
   </div>
 
-  <!-- 中間 Prompt -->
   <div class="middle card">
-
     <h2>AI 指令輸出</h2>
+    <div id="output">請先選擇條件，再點「生成 AI 指令」。</div>
+    <button onclick="copyPrompt()">複製 Prompt</button>
 
-    <div id="output">
-
-請先選擇：
-主題宇宙、系列、指令類型。
-
-再點擊：
-
-「生成 AI 指令」
-
-    </div>
-
-    <button onclick="copyPrompt()">
-
-      複製 Prompt
-
-    </button>
-
+    <h2 style="margin-top:28px;">AI 回傳內容</h2>
+    <textarea id="aiResult" placeholder="把 ChatGPT 產出的內容貼在這裡，再按右邊「儲存視覺內容」。"></textarea>
   </div>
 
-  <!-- 右側 -->
   <div class="right card">
-
     <h2>內容回填</h2>
 
-    <!-- Drive -->
     <label>Google Drive 成品連結</label>
+    <input id="driveLink" placeholder="貼上 Google Drive 圖片或影片連結"/>
 
-    <input
-      id="driveLink"
-      placeholder="貼上 Google Drive 圖片或影片連結"
-    />
-
-    <!-- 優先級 -->
     <label>優先級</label>
-
     <select id="priority">
-
       <option>P1｜立即插單</option>
       <option>P2｜今日優先</option>
       <option selected>P3｜一般內容</option>
       <option>P4｜庫存內容</option>
-
     </select>
 
-    <!-- 內容狀態 -->
     <label>內容狀態</label>
-
     <select id="contentStatus">
-
       <option>待產圖</option>
       <option selected>已產圖</option>
       <option>待成片</option>
       <option>已成片</option>
       <option>已發佈</option>
       <option>封存</option>
-
     </select>
 
-    <!-- 儲存 -->
-    <button onclick="saveVisualContent()">
-
-      儲存視覺內容
-
-    </button>
-
+    <button onclick="saveVisualContent()">儲存視覺內容</button>
   </div>
 
 </div>
 
 <script src="app.js"></script>
-
 </body>
 </html>
