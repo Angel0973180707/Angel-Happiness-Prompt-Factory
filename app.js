@@ -1,6 +1,6 @@
 // ========================================
-// 幸福生態圈 AI OS v4.5
-// Story Driven Engine
+// 幸福生態圈 AI OS v5.1
+// Story Driven Engine + Content Quality Engine
 // app.js 完整覆蓋版
 // ========================================
 
@@ -25,6 +25,8 @@ const statusText = document.getElementById("statusText");
 
 window.addEventListener("DOMContentLoaded", async () => {
   if (gasUrlInput) gasUrlInput.value = CONFIG.GAS_URL;
+
+  ensureAnalysisBox();
 
   if (saveConfigBtn) {
     saveConfigBtn.addEventListener("click", () => {
@@ -61,7 +63,7 @@ async function testConnection() {
 }
 
 function getGasUrl() {
-  return gasUrlInput.value.trim()
+  return gasUrlInput?.value?.trim()
     || localStorage.getItem("GAS_URL")
     || DEFAULT_GAS_URL;
 }
@@ -83,7 +85,7 @@ async function loadStories() {
     stories.forEach((story) => {
       const opt = document.createElement("option");
       opt.value = encodeURIComponent(JSON.stringify(story));
-      opt.textContent = `${story.id || ""}｜${story.title || "未命名故事"}`;
+      opt.textContent = `${story.id || story.story_id || ""}｜${story.title || story.story_title || "未命名故事"}`;
       storySelect.appendChild(opt);
     });
 
@@ -100,6 +102,9 @@ async function generateAll() {
   }
 
   const story = JSON.parse(decodeURIComponent(storySelect.value));
+
+  ensureAnalysisBox();
+  renderAnalysis(null);
 
   output.innerHTML = "AI 正在生成內容宇宙...";
 
@@ -144,7 +149,28 @@ Shorts：${shorts.length} 支
       </div>
     `;
 
-    statusText.textContent = "內容宇宙已寫入完成";
+    statusText.textContent = "內容宇宙已寫入完成，正在分析內容品質...";
+
+    const textForAnalysis = [
+      longVideo.video_title,
+      longVideo.core_hook,
+      longVideo.opening_script,
+      longVideo.chapter_01_script,
+      longVideo.chapter_02_script,
+      longVideo.chapter_03_script,
+      longVideo.ending_script
+    ].filter(Boolean).join("\n\n");
+
+    const analysisRes = await analyzeContent(textForAnalysis);
+
+    if (analysisRes.ok) {
+      renderAnalysis(analysisRes.data);
+      statusText.textContent = "內容宇宙已寫入完成，內容品質分析完成";
+    } else {
+      renderAnalysisError(analysisRes.message || "內容品質分析失敗");
+      statusText.textContent = "內容已寫入，但品質分析失敗";
+    }
+
   } catch (err) {
     output.innerHTML = "寫入失敗：" + err.message;
     statusText.textContent = "寫入失敗";
@@ -158,12 +184,12 @@ function generateLongVideo(story) {
     video_id: `HJ-L-${now}`,
     unit: "幸福教養",
     series_name: "幸福教養",
-    topic_name: story.title || "",
-    video_title: `${story.title || "教養故事"}｜幸福教養長影片`,
+    topic_name: story.title || story.story_title || "",
+    video_title: `${story.title || story.story_title || "教養故事"}｜幸福教養長影片`,
     video_type: "LONG_VIDEO",
     core_emotion: story.emotion_type || "溫暖療癒",
     core_hook: story.core_hook || story.parenting_quote || story.summary || "",
-    story_source: story.title || "",
+    story_source: story.title || story.story_title || "",
     story_summary: story.summary || "",
     pain_point: story.summary || "",
     awakening_point: story.parenting_quote || "",
@@ -183,7 +209,7 @@ function generateLongVideo(story) {
     camera_language: "cinematic documentary, warm close-up, slow pan",
     music_flow: "溫柔鋼琴 → 暖光弦樂 → 安定尾奏",
     visual_style: "溫暖療癒紀錄片風",
-    video_prompt: `${story.title || ""} cinematic healing parenting documentary, warm storytelling, emotional transformation`,
+    video_prompt: `${story.title || story.story_title || ""} cinematic healing parenting documentary, warm storytelling, emotional transformation`,
     shorts_derivative_count: 6,
     estimated_shorts_hooks: "情緒共鳴｜教養現場｜腦科學解析｜心理轉化｜幸福金句｜導流長片",
     target_platform: "YouTube",
@@ -211,8 +237,8 @@ function generateShorts(story) {
     short_id: `HJ-S-${now}-${i + 1}`,
     unit: "幸福教養",
     series_name: "幸福教養",
-    topic_name: story.title || "",
-    short_title: `${story.title || "教養故事"}｜Shorts ${i + 1}`,
+    topic_name: story.title || story.story_title || "",
+    short_title: `${story.title || story.story_title || "教養故事"}｜Shorts ${i + 1}`,
     hook_type: i === 5 ? "導流型" : "情緒共鳴型",
     emotion_trigger: story.emotion_type || "被理解感",
     visual_style: "親子療癒繪本風",
@@ -225,7 +251,7 @@ function generateShorts(story) {
     cta_style: i === 5 ? "導流 YouTube 長影片" : "柔性陪伴型",
     shorts_cover_text: makeShortCover(story, i),
     shorts_hook_text: hook,
-    video_prompt: `${story.title || ""}, warm parenting short video, healing family moment, emotional storytelling`,
+    video_prompt: `${story.title || story.story_title || ""}, warm parenting short video, healing family moment, emotional storytelling`,
     platform_focus: "IG / TikTok / YouTube Shorts",
     output_ratio: "9:16",
     status: "draft",
@@ -246,7 +272,7 @@ function generateVisuals(story) {
     content_id: `HJ-C-${now}-${i + 1}`,
     unit: "幸福教養",
     series_name: "情緒教養",
-    topic_name: story.title || "",
+    topic_name: story.title || story.story_title || "",
     content_type: "POSTER_SINGLE",
     content_title: makeVisualTitle(story, i),
     main_copy: copy,
@@ -296,14 +322,15 @@ function makeShortCover(story, i) {
     "教養，是一起成長",
     "完整故事看長影片"
   ];
-  return arr[i] || story.title || "幸福教養";
+  return arr[i] || story.title || story.story_title || "幸福教養";
 }
 
 function makeVisualTitle(story, i) {
+  const title = story.title || story.story_title || "教養故事";
   const arr = [
-    `${story.title || "教養故事"}｜教養金句`,
-    `${story.title || "教養故事"}｜腦科學理解`,
-    `${story.title || "教養故事"}｜心理學轉化`
+    `${title}｜教養金句`,
+    `${title}｜腦科學理解`,
+    `${title}｜心理學轉化`
   ];
   return arr[i];
 }
@@ -336,6 +363,112 @@ async function postData(action, data) {
   }
 
   return json;
+}
+
+async function analyzeContent(text) {
+  try {
+    const res = await fetch(getGasUrl(), {
+      method: "POST",
+      body: JSON.stringify({
+        action: "analyzeContent",
+        text: text || ""
+      })
+    });
+
+    return await res.json();
+  } catch (err) {
+    console.error("analyzeContent error", err);
+    return {
+      ok: false,
+      message: err.message
+    };
+  }
+}
+
+function ensureAnalysisBox() {
+  if (document.getElementById("contentAnalysisBox")) return;
+
+  if (!output || !output.parentNode) return;
+
+  const box = document.createElement("div");
+  box.id = "contentAnalysisBox";
+  output.parentNode.insertBefore(box, output.nextSibling);
+}
+
+function renderAnalysis(data) {
+  ensureAnalysisBox();
+
+  const el = document.getElementById("contentAnalysisBox");
+  if (!el) return;
+
+  if (!data) {
+    el.innerHTML = "";
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="analysis-card">
+      <h3>內容品質分析</h3>
+
+      <div class="score-grid">
+        <div class="score-item">
+          <div class="score-title">Hook</div>
+          <div class="score-value">${escapeHtml(data.hook_score)}</div>
+        </div>
+
+        <div class="score-item">
+          <div class="score-title">共鳴</div>
+          <div class="score-value">${escapeHtml(data.resonance_score)}</div>
+        </div>
+
+        <div class="score-item">
+          <div class="score-title">真人感</div>
+          <div class="score-value">${escapeHtml(data.ai_score)}</div>
+        </div>
+
+        <div class="score-item">
+          <div class="score-title">密度</div>
+          <div class="score-value">${escapeHtml(data.density_score)}</div>
+        </div>
+      </div>
+
+      <div class="total-score">
+        總分：${escapeHtml(data.total_score)}
+      </div>
+
+      <div class="level-tag">
+        ${escapeHtml(data.level)}
+      </div>
+
+      <h4>問題</h4>
+      <ul>
+        ${(data.problems || [])
+          .map(p => `<li>${escapeHtml(p)}</li>`)
+          .join("")}
+      </ul>
+
+      <h4>優化建議</h4>
+      <ul>
+        ${(data.suggestions || [])
+          .map(s => `<li>${escapeHtml(s)}</li>`)
+          .join("")}
+      </ul>
+    </div>
+  `;
+}
+
+function renderAnalysisError(message) {
+  ensureAnalysisBox();
+
+  const el = document.getElementById("contentAnalysisBox");
+  if (!el) return;
+
+  el.innerHTML = `
+    <div class="analysis-card">
+      <h3>內容品質分析</h3>
+      <p>分析失敗：${escapeHtml(message)}</p>
+    </div>
+  `;
 }
 
 function escapeHtml(str) {
