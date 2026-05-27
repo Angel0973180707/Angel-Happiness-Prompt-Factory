@@ -367,15 +367,49 @@ async function writeToSheets() {
 }
 
 function copyTSV() {
-  if (!latestPackage) return alert("請先生成內容包");
+
+  if (!latestPackage) {
+    return alert("請先生成內容包");
+  }
 
   const v = latestPackage.visual;
-  const keys = Object.keys(v);
-  const tsv = keys.map((k) => v[k] ?? "").join("\t");
 
-  navigator.clipboard.writeText(tsv).then(() => {
-    setStatus("已複製 03 分頁 TSV");
-  });
+  const keys = Object.keys(v);
+
+  /* =========================
+     TSV 安全轉換
+  ========================= */
+
+  const tsv = keys
+    .map((k) => {
+
+      return String(v[k] ?? "")
+
+        /* 真換行 → \\n */
+        .replace(/\r?\n/g, "\\n")
+
+        /* Tab 避免炸欄位 */
+        .replace(/\t/g, " ")
+
+        /* 多餘空白整理 */
+        .trim();
+
+    })
+    .join("\t");
+
+  navigator.clipboard
+    .writeText(tsv)
+    .then(() => {
+
+      setStatus("已複製 03 分頁 TSV（安全模式）");
+
+    })
+    .catch((err) => {
+
+      setStatus("複製失敗：" + err.message);
+
+    });
+
 }
 
 function unitCode(unit) {
