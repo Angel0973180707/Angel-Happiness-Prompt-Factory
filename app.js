@@ -1,173 +1,405 @@
-const SERIES_PRESETS = {
-  "早安圖": { ratio:"1:1", music:"木吉他Lo-fi", scene:"日式窗邊早餐", mood:"慢生活療癒", color:"米白暖色系" },
-  "晚安圖": { ratio:"9:16", music:"輕鋼琴Lo-fi", scene:"夜晚窗邊熱茶", mood:"安定陪伴", color:"米白深藍暖灰" },
-  "生命旅居": { ratio:"9:16", music:"空靈療癒音樂", scene:"海邊靈魂旅居", mood:"生命感悟", color:"米白霧金" },
-  "慢生活": { ratio:"1:1", music:"日系咖啡館音樂", scene:"鄉間慢生活", mood:"放鬆日常", color:"米白奶茶色" },
-  "料理食譜板": { ratio:"1:1", music:"輕快廚房音樂", scene:"木桌料理食譜板", mood:"手作溫暖", color:"米白奶油色" },
-  "人生金句": { ratio:"9:16", music:"溫柔鋼琴", scene:"安靜人生場景", mood:"共鳴放下", color:"米白暖橘" },
-  "情緒教養": { ratio:"1:1", music:"溫暖輕音樂", scene:"家庭互動場景", mood:"安心陪伴", color:"米白暖黃" },
-  "睡眠療癒": { ratio:"9:16", music:"Alpha波療癒音樂", scene:"夜晚靜心場景", mood:"放鬆舒眠", color:"深藍暖灰" },
-  "療癒小物": { ratio:"1:1", music:"Lo-fi生活感", scene:"溫暖居家桌面", mood:"質感舒服", color:"奶茶色系" },
-  "品牌導流": { ratio:"9:16", music:"清爽商業音樂", scene:"智慧名片展示", mood:"信任導流", color:"米白金棕" }
-};
+const LS_GAS_URL = "happiness_ai_console_gas_url_v3";
+let latestPackage = null;
 
-const QUALITY = "premium lifestyle illustration, Japanese adult healing picture book style, soft watercolor and colored pencil texture, cinematic lighting, editorial poster composition, visual storytelling, warm atmosphere, high aesthetic, professional composition";
-const NEGATIVE = "avoid cheap AI look, avoid childish cartoon style, avoid plastic skin, avoid distorted hands, avoid bad anatomy, avoid messy background, avoid wrong text, avoid overexposure, avoid low resolution";
+const $ = (id) => document.getElementById(id);
 
-let currentTarget = "topicTsv";
+window.addEventListener("DOMContentLoaded", () => {
+  $("gasUrl").value = localStorage.getItem(LS_GAS_URL) || "";
 
-function $(id){ return document.getElementById(id); }
-
-$("generateIdeaBtn").addEventListener("click", () => {
-  const idea = $("ideaInput").value.trim();
-  const unit = $("unitSelect").value;
-  const selectedSeries = $("seriesSelect").value;
-  if(!idea){ alert("請輸入靈感"); return; }
-
-  const data = buildContent(idea, unit, selectedSeries);
-  renderResult(data);
-  fillTsv(data);
-  $("resultPanel").hidden = false;
-  $("sheetPanel").hidden = false;
+  $("saveConfigBtn").addEventListener("click", saveConfig);
+  $("testBtn").addEventListener("click", testConnection);
+  $("loadSeriesBtn").addEventListener("click", loadSeries);
+  $("generateBtn").addEventListener("click", generateContent);
+  $("copyBtn").addEventListener("click", copyTSV);
+  $("writeBtn").addEventListener("click", writeToSheets);
 });
 
-document.querySelectorAll(".tab").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    currentTarget = btn.dataset.target;
-    $("topicTsv").hidden = currentTarget !== "topicTsv";
-    $("visualTsv").hidden = currentTarget !== "visualTsv";
-  });
-});
-
-$("copyCurrentBtn").addEventListener("click", async () => {
-  const text = $(currentTarget).value;
-  await navigator.clipboard.writeText(text);
-  alert("已複製");
-});
-
-$("downloadTsvBtn").addEventListener("click", () => {
-  const text = $(currentTarget).value;
-  const name = currentTarget === "topicTsv" ? "02_topic_library_row.tsv" : "03_visual_content_library_row.tsv";
-  const blob = new Blob([text], {type:"text/tab-separated-values;charset=utf-8"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = name;
-  a.click();
-  URL.revokeObjectURL(a.href);
-});
-
-function autoSeries(idea, selected){
-  if(selected !== "自動判斷") return selected;
-  if(/[晚夜睡眠焦慮放下休息]/.test(idea)) return "晚安圖";
-  if(/[早晨光開始咖啡早餐]/.test(idea)) return "早安圖";
-  if(/[人生生命自己重逢旅居海山天空]/.test(idea)) return "生命旅居";
-  if(/[慢生活午後散步閱讀花草]/.test(idea)) return "慢生活";
-  return "早安圖";
+function saveConfig() {
+  localStorage.setItem(LS_GAS_URL, $("gasUrl").value.trim());
+  setStatus("設定已儲存");
 }
 
-function analyzeIdea(idea){
-  let time = "晨光";
-  let emotion = "溫暖療癒";
-  let life = "咖啡";
-  let lifeTheme = idea;
-  let scene = "日式窗邊生活場景";
-  let lighting = "暖色晨光穿透窗簾";
-  let action = "雙手捧著熱咖啡，安靜看向窗外";
-  let color = "米白、奶油色、暖木色、柔金色";
-  let music = "木吉他Lo-fi";
+function getGasUrl() {
+  return $("gasUrl").value.trim() || localStorage.getItem(LS_GAS_URL) || "";
+}
 
-  if(/[雨下雨雨聲]/.test(idea)){
-    time="雨天"; emotion="被接住、安靜療癒"; life="窗邊看雨"; scene="窗邊雨景與熱茶"; lighting="灰米白天光與室內暖光"; action="捧著熱茶，側臉看雨"; color="灰米白、暖木色、淡奶茶色"; music="鋼琴Lo-fi";
-  } else if(/[夜晚晚安深夜睡眠焦慮休息]/.test(idea)){
-    time="夜晚"; emotion="安定、陪伴、放鬆"; life="閱讀與熱茶"; scene="夜晚窗邊沙發"; lighting="暖黃夜燈與柔和月光"; action="抱著毛毯，低頭閱讀或喝熱茶"; color="米白、深藍、暖灰、奶茶色"; music="輕鋼琴Lo-fi";
-  } else if(/[山森林木屋]/.test(idea)){
-    time="山旅"; emotion="自由、安靜、存在感"; life="森林散步"; scene="山中木屋與霧氣窗景"; lighting="霧氣晨光與柔和逆光"; action="推開窗，看向遠山"; color="森林綠、暖木色、米白霧金"; music="民謠吉他";
-  } else if(/[海海邊天空]/.test(idea)){
-    time="海邊"; emotion="放下、自由、療癒"; life="看海"; scene="黃昏海邊與留白天空"; lighting="夕陽霧金光"; action="背影坐在海邊，看向遠方"; color="米白、霧金、淺藍、沙色"; music="空靈療癒音樂";
-  } else if(/[午後閱讀書花草散步]/.test(idea)){
-    time="午後"; emotion="放鬆、舒服、慢下來"; life="閱讀或散步"; scene="午後木桌與書本花草"; lighting="午後柔光與窗邊漫反射"; action="翻書、喝咖啡、整理花草"; color="米白、奶茶色、淺木色"; music="日系咖啡館音樂";
+function setStatus(text) {
+  $("statusText").textContent = text;
+}
+
+async function testConnection() {
+  const url = getGasUrl();
+  if (!url) return alert("請先貼上 GAS Web App URL");
+
+  try {
+    const res = await fetch(`${url}?action=ping`);
+    const data = await res.json();
+    setStatus(data.ok ? "連線成功：" + data.message : "連線失敗");
+  } catch (err) {
+    setStatus("連線錯誤：" + err.message);
   }
-
-  return { time, emotion, life, lifeTheme, scene, lighting, action, color, music };
 }
 
-function buildContent(idea, unit, selectedSeries){
-  const series = autoSeries(idea, selectedSeries);
-  const preset = SERIES_PRESETS[series] || SERIES_PRESETS["早安圖"];
-  const a = analyzeIdea(idea);
-  const id = `${unitPrefix(unit)}-C-${nowId()}`;
-  const title = makeTitle(idea, series);
-  const mainCopy = makeMainCopy(idea, series);
-  const platformCopy = makePlatformCopy(idea, series, unit);
+async function loadSeries() {
+  const url = getGasUrl();
+  if (!url) return alert("請先貼上 GAS Web App URL");
+
+  try {
+    const res = await fetch(`${url}?action=getSeries`);
+    const data = await res.json();
+
+    if (!data.ok) throw new Error(data.message || "讀取失敗");
+
+    const units = [...new Set(data.rows.map((r) => r.unit).filter(Boolean))];
+    if (units.length) {
+      $("unitSelect").innerHTML = units
+        .map((u) => `<option value="${escapeHtml(u)}">${escapeHtml(u)}</option>`)
+        .join("");
+    }
+
+    const series = [...new Set(data.rows.map((r) => r.series_name).filter(Boolean))];
+    if (series.length) {
+      $("seriesSelect").innerHTML = series
+        .map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`)
+        .join("");
+    }
+
+    setStatus(`已讀取 ${data.rows.length} 筆系列資料`);
+  } catch (err) {
+    setStatus("讀取系列失敗：" + err.message);
+  }
+}
+
+function generateContent() {
+  const unit = $("unitSelect").value;
+  const series = $("seriesSelect").value;
+  const idea = $("ideaInput").value.trim();
+
+  if (!idea) return alert("請輸入一句靈感");
+
+  latestPackage = buildLocalAIContent({ unit, series, idea });
+  renderResult(latestPackage);
+}
+
+function buildLocalAIContent({ unit, series, idea }) {
+  const stamp = formatStamp(new Date());
+  const universe = getUniverseProfile(unit);
+  const topic = analyzeIdea(idea, unit, series);
+  const title = makeTitle(idea, topic, series);
+  const mainCopy = makeMainCopy(idea, topic, unit);
+  const platformCopy = `${title}\n\n${mainCopy}\n\n#${unit}`;
   const hashtags = makeHashtags(unit, series);
-  const character = "40歲左右短髮女性，米白棉麻居家服，自然氣質，真實生活感，不看鏡頭";
-  const composition = preset.ratio === "1:1" ? "Instagram高級海報構圖，保留文案留白區" : "9:16短影音封面構圖，人物與場景有清楚層次，保留上方或側邊文案空間";
-  const texture = "水彩＋色鉛筆混合媒材，細膩紙張紋理，高級成人療癒繪本風";
-  const brand = "簡約小太陽logo自然融入角落，低干擾、不突兀";
-  const imagePrompt = `${unit} ${series}，${a.scene}，${a.emotion}，${a.lighting}，${character}`;
-  const finalPrompt = `Japanese adult healing picture book style, ${unit} universe, ${series} poster, ${a.scene}, a 40-year-old short-haired woman wearing beige linen homewear, natural and calm, not looking at camera, ${a.action}, ${a.lighting}, color palette of ${a.color}, ${texture}, ${composition}, warm slow living atmosphere, visual storytelling, cute minimal sun logo naturally placed in the corner, ${QUALITY}, ${NEGATIVE}, ${preset.ratio} composition`;
+  const finalPrompt = makeFinalPrompt(universe, topic);
 
   return {
-    id, unit, series, topic: idea, contentType:"POSTER_SINGLE", title, mainCopy,
-    visualStyle: "日系成人療癒繪本風", layoutType:"POSTER", imagePrompt,
-    ratio: preset.ratio, music: a.music || preset.music, platformCopy, hashtags,
-    themeEmotion: a.emotion, sceneSetting: a.scene, characterSetting: character,
-    characterAction: a.action, lightingStyle: a.lighting, colorPalette: a.color,
-    compositionStyle: composition, textureStyle: texture, brandElements: brand,
-    qualityKeywords: QUALITY, negativePrompt: NEGATIVE, finalPrompt,
-    voiceStyle:"溫柔療癒女聲", publishGroup:`${unit}全平台`, status:"待產圖",
-    timeUniverse:a.time, emotionUniverse:a.emotion, lifeUniverse:a.life, lifeTheme:a.lifeTheme
+    visual: {
+      content_id: `${unitCode(unit)}-C-${stamp}`,
+      unit,
+      series_name: series,
+      topic_name: topic.topic_name,
+      content_type: "POSTER_SINGLE",
+      content_title: title,
+      main_copy: mainCopy,
+      visual_style: universe.visual_style,
+      layout_type: "POSTER",
+      image_prompt: `${universe.visual_style}，${topic.scene_setting}`,
+      output_ratio: universe.ratio,
+      music_style: topic.music_style,
+      platform_copy: platformCopy,
+      hashtags,
+      theme_emotion: topic.theme_emotion,
+      scene_setting: topic.scene_setting,
+      character_setting: universe.character,
+      character_action: topic.character_action,
+      lighting_style: topic.lighting_style,
+      color_palette: topic.color_palette,
+      composition_style: topic.composition_style,
+      texture_style: universe.texture_style,
+      brand_elements: universe.logo,
+      quality_keywords: universe.quality_keywords,
+      negative_prompt: universe.negative_prompt,
+      final_prompt: finalPrompt,
+      shorts_cover_text: makeCoverText(idea),
+      shorts_hook_text: makeHookText(idea),
+      emotion_trigger: topic.emotion_trigger,
+      content_energy_level: topic.energy,
+      visual_focus_point: topic.visual_focus_point,
+      scroll_stopping_element: topic.scroll_stopping_element,
+      target_platform: "IG / TikTok / YouTube Shorts",
+      reuse_potential: "高"
+    },
+    short: {
+      short_id: `${unitCode(unit)}-S-${stamp}`,
+      unit,
+      series_name: series,
+      topic_name: topic.topic_name,
+      short_title: title,
+      hook_type: topic.hook_type,
+      emotion_trigger: topic.emotion_trigger,
+      visual_style: universe.visual_style,
+      opening_script: makeHookText(idea),
+      main_script: mainCopy,
+      ending_script: "把這份感覺，留給今天的自己。",
+      bgm_style: topic.music_style,
+      cta_style: "柔性陪伴型",
+      shorts_cover_text: makeCoverText(idea),
+      shorts_hook_text: makeHookText(idea),
+      video_prompt: finalPrompt,
+      platform_focus: "IG / TikTok / YouTube Shorts",
+      output_ratio: "9:16",
+      status: "待產圖",
+      notes: "v3-lite 本地規則引擎生成"
+    }
   };
 }
 
-function makeTitle(idea, series){
-  if(series === "晚安圖") return `今晚，${idea}`;
-  if(series === "早安圖") return `早安，${idea}`;
-  return idea;
+function getUniverseProfile(unit) {
+  const base = {
+    visual_style: "日系成人療癒繪本風",
+    ratio: "1:1",
+    logo: "簡約小太陽logo自然融入角落",
+    texture_style: "水彩＋色鉛筆混合媒材，細膩紙張紋理",
+    quality_keywords:
+      "premium lifestyle illustration, Japanese adult healing picture book style, cinematic lighting, editorial poster composition, visual storytelling, warm atmosphere, high aesthetic, professional composition",
+    negative_prompt:
+      "avoid cheap AI look, avoid childish cartoon style, avoid plastic skin, avoid distorted hands, avoid bad anatomy, avoid messy background, avoid wrong text, avoid overexposure, avoid low resolution"
+  };
+
+  const map = {
+    幸福旅居: {
+      ...base,
+      character: "40歲左右短髮女性，棉麻居家服，自然生活感，不看鏡頭",
+      visual_style: "日系成人療癒繪本風"
+    },
+    幸福教養: {
+      ...base,
+      character: "一位溫柔大人與孩子，自然家庭互動",
+      visual_style: "親子療癒繪本風"
+    },
+    健康頻率: {
+      ...base,
+      character: "安靜冥想或休息的人物剪影，溫柔理性",
+      visual_style: "溫柔腦神經科學療癒風"
+    },
+    生活好物: {
+      ...base,
+      character: "溫柔生活者的手部或居家片段",
+      visual_style: "日系生活選物風"
+    },
+    幸福緣手作: {
+      ...base,
+      character: "手作料理者的雙手與餐桌",
+      visual_style: "料理食譜圖板風"
+    },
+    智慧名片商業系: {
+      ...base,
+      character: "創業者使用手機與智慧名片的生活場景",
+      visual_style: "溫暖商業品牌風"
+    }
+  };
+
+  return map[unit] || map["幸福旅居"];
 }
 
-function makeMainCopy(idea, series){
-  if(series === "晚安圖") return `${idea}。把今天慢慢放下，讓心先回到安穩的地方。`;
-  if(series === "早安圖") return `${idea}。先好好感受一點晨光，再慢慢走進今天。`;
-  return `${idea}。幸福就在簡單的日常裡，慢慢感受，就會被生活溫柔接住。`;
+function analyzeIdea(idea, unit, series) {
+  let t = {
+    topic_name: idea,
+    theme_emotion: "溫暖療癒",
+    scene_setting: "窗邊生活場景，留白、木桌、柔和日常感",
+    lighting_style: "柔和暖光，空氣感，微微逆光",
+    character_action: "安靜坐著，雙手捧著熱飲，慢慢呼吸",
+    color_palette: "米白、奶油色、暖木色",
+    music_style: "木吉他 Lo-fi",
+    composition_style: "Instagram高級海報構圖，主體清楚，保留文案留白",
+    emotion_trigger: "被接住感",
+    energy: "低能量療癒",
+    visual_focus_point: "熱飲蒸氣與人物安靜姿態",
+    scroll_stopping_element: "大面積留白＋溫暖逆光",
+    hook_type: "情緒共鳴型"
+  };
+
+  if (/雨|下雨|雨聲/.test(idea)) {
+    Object.assign(t, {
+      theme_emotion: "安靜療癒",
+      scene_setting: "窗邊看雨，玻璃上有雨痕，室內有熱茶與毛毯",
+      lighting_style: "灰米白陰天光，室內暖燈柔和補光",
+      character_action: "靠窗坐著，雙手捧熱茶，看著雨慢慢落下",
+      color_palette: "灰米白、暖木色、淡奶茶色",
+      music_style: "鋼琴 Lo-fi",
+      emotion_trigger: "被雨聲安慰的感覺",
+      visual_focus_point: "窗外雨痕與熱茶蒸氣",
+      scroll_stopping_element: "雨窗＋暖燈對比"
+    });
+  }
+
+  if (/夜|晚安|睡|累|焦慮/.test(idea) || series.includes("晚安")) {
+    Object.assign(t, {
+      theme_emotion: "安定陪伴",
+      scene_setting: "夜晚窗邊或沙發角落，暖黃燈、熱茶、書本與毛毯",
+      lighting_style: "低亮度暖黃燈光，柔和陰影，夜晚安定感",
+      character_action: "抱著毛毯，坐在沙發閱讀或安靜喝茶",
+      color_palette: "米白、深奶茶、暖灰、夜藍",
+      music_style: "輕鋼琴 Lo-fi",
+      emotion_trigger: "終於可以休息的感覺",
+      energy: "低能量療癒",
+      visual_focus_point: "暖燈與人物放鬆姿態",
+      scroll_stopping_element: "夜晚暖燈＋安靜文字"
+    });
+  }
+
+  if (unit === "健康頻率") {
+    Object.assign(t, {
+      theme_emotion: "神經系統穩定",
+      scene_setting: "安靜深藍霧紫空間，柔和光流、呼吸節奏、抽象神經線條",
+      lighting_style: "深藍霧紫微光，溫柔光流，不黑科技",
+      character_action: "閉眼深呼吸或安靜冥想",
+      color_palette: "深藍、霧紫、暖灰、微光金",
+      music_style: "Alpha波療癒音樂",
+      emotion_trigger: "大腦終於放鬆的感覺",
+      visual_focus_point: "呼吸光流與神經系統意象",
+      scroll_stopping_element: "深藍微光＋腦神經線條"
+    });
+  }
+
+  return t;
 }
 
-function makePlatformCopy(idea, series, unit){
-  const prefix = series === "晚安圖" ? "晚安 🌙" : series === "早安圖" ? "早安 ☀️" : "今天，也慢慢來 ✨";
-  return `${prefix}\n${idea}\n願你在簡單日常裡，慢慢把幸福放回心裡。\n#${unit}`;
+function makeTitle(idea, topic, series) {
+  if (series.includes("早安")) return "今天，也慢慢開始";
+  if (series.includes("晚安")) return "今晚，把心放輕一點";
+  if (/累|焦慮/.test(idea)) return "今天不用急著變更好";
+  if (/雨/.test(idea)) return "被雨聲安慰的時光";
+  return idea.length <= 14 ? idea : idea.slice(0, 14);
 }
 
-function makeHashtags(unit, series){
-  return `#${unit} #${series} #幸福感 #療癒繪本風 #慢生活 #日系插畫 #溫暖日常 #小太陽 #成人繪本風`;
+function makeMainCopy(idea, topic, unit) {
+  if (unit === "健康頻率") {
+    return "當你覺得累，不一定是意志力不夠。\n也許只是大腦和神經系統，需要一點安靜的時間。\n慢慢呼吸，讓身體先回到安全感裡。";
+  }
+
+  return `${idea}\n\n不用急著追趕世界，\n先把心放回自己身上。\n在一點光、一杯熱飲、一段安靜裡，\n慢慢找回今天的幸福感。`;
 }
 
-function renderResult(d){
-  $("ideaResult").innerHTML = [
-    ["內容編號", d.id], ["系列", `${d.unit}｜${d.series}`], ["主題", d.topic],
-    ["主題情緒", d.themeEmotion], ["場景", d.sceneSetting], ["人物", d.characterSetting],
-    ["人物動作", d.characterAction], ["光影", d.lightingStyle], ["音樂", d.music]
-  ].map(([k,v]) => `<div class="item"><b>${k}：</b>${escapeHtml(v)}</div>`).join("");
+function makeHashtags(unit, series) {
+  const arr = ["#幸福生態圈", `#${unit}`, `#${series}`, "#療癒系", "#慢生活", "#幸福感"];
+
+  if (unit === "健康頻率") {
+    arr.push("#腦神經科學", "#神經系統", "#睡眠療癒");
+  }
+
+  if (unit === "幸福教養") {
+    arr.push("#親子教養", "#情緒穩定");
+  }
+
+  return [...new Set(arr)].join(" ");
 }
 
-function fillTsv(d){
-  const topicHeaders = "topic_id\tunit\tseries_name\ttopic_name\ttime_universe\temotion_universe\tlife_universe\tlife_theme\ttheme_emotion\tscene_setting\tlighting_style\tcharacter_action\tcolor_palette\tmusic_style\tcomposition_style\ttexture_style\tstatus\tnotes";
-  const topicRow = [d.id.replace("-C-","-T-"), d.unit, d.series, d.topic, d.timeUniverse, d.emotionUniverse, d.lifeUniverse, d.lifeTheme, d.themeEmotion, d.sceneSetting, d.lightingStyle, d.characterAction, d.colorPalette, d.music, d.compositionStyle, d.textureStyle, "啟用", "控制台靈感自動解析"].join("\t");
-  $("topicTsv").value = `${topicHeaders}\n${topicRow}`;
-
-  const visualHeaders = "content_id\tunit\tseries_name\ttopic_name\tcontent_type\tcontent_title\tmain_copy\tvisual_style\tlayout_type\timage_prompt\toutput_ratio\tmusic_style\tplatform_copy\thashtags\ttheme_emotion\tscene_setting\tcharacter_setting\tcharacter_action\tlighting_style\tcolor_palette\tcomposition_style\ttexture_style\tbrand_elements\tquality_keywords\tnegative_prompt\tfinal_prompt\tvoice_style\tpublish_group\tdrive_link\tstatus\tnotes";
-  const visualRow = [d.id, d.unit, d.series, d.topic, d.contentType, d.title, d.mainCopy, d.visualStyle, d.layoutType, d.imagePrompt, d.ratio, d.music, d.platformCopy, d.hashtags, d.themeEmotion, d.sceneSetting, d.characterSetting, d.characterAction, d.lightingStyle, d.colorPalette, d.compositionStyle, d.textureStyle, d.brandElements, d.qualityKeywords, d.negativePrompt, d.finalPrompt, d.voiceStyle, d.publishGroup, "", d.status, "控制台靈感自動生成"].join("\t");
-  $("visualTsv").value = `${visualHeaders}\n${visualRow}`;
+function makeCoverText(idea) {
+  if (/累|焦慮/.test(idea)) return "今天不用急著變更好";
+  if (/雨/.test(idea)) return "被雨聲安慰一下";
+  return "幸福，就在這一刻";
 }
 
-function unitPrefix(unit){
-  const map = { "幸福旅居":"HL", "幸福緣手作":"HY", "生活感悟":"LGW", "幸福教養":"HJ", "健康頻率":"HF", "生活好物":"LG", "智慧名片商業系":"HC" };
-  return map[unit] || "HE";
+function makeHookText(idea) {
+  if (/累|焦慮/.test(idea)) return "有時候，你不是不夠努力，只是太累了。";
+  if (/雨/.test(idea)) return "下雨天，也可以是一種溫柔的提醒。";
+  return "先別急著追趕世界，今天慢慢來也可以。";
 }
-function nowId(){
-  const d = new Date();
-  const pad = n => String(n).padStart(2,"0");
-  return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+
+function makeFinalPrompt(u, t) {
+  return `${u.visual_style}, premium lifestyle illustration, ${t.scene_setting}, ${u.character}, ${t.character_action}, ${t.lighting_style}, ${t.color_palette}, ${t.composition_style}, ${u.texture_style}, ${u.logo}, emotional visual storytelling, warm atmosphere, high aesthetic, professional composition, ${u.quality_keywords}, ${u.negative_prompt}, square composition or selected social media ratio, no wrong text, no distorted hands`;
 }
-function escapeHtml(str){ return String(str).replace(/[&<>"]/g, s => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[s])); }
+
+function renderResult(pkg) {
+  const v = pkg.visual;
+
+  const fields = [
+    "content_title",
+    "main_copy",
+    "platform_copy",
+    "hashtags",
+    "final_prompt",
+    "shorts_cover_text",
+    "shorts_hook_text",
+    "emotion_trigger"
+  ];
+
+  $("resultArea").innerHTML = `
+    <div class="result-card">
+      ${fields
+        .map(
+          (k) => `
+          <div class="item">
+            <b>${k}</b>
+            <pre>${escapeHtml(v[k])}</pre>
+          </div>
+        `
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+async function writeToSheets() {
+  if (!latestPackage) return alert("請先生成內容包");
+
+  const url = getGasUrl();
+  if (!url) return alert("請先貼上 GAS Web App URL");
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "writeContentPackage",
+        visual: latestPackage.visual,
+        short: latestPackage.short
+      })
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) throw new Error(data.message || "寫入失敗");
+
+    setStatus("已寫入 Sheets");
+  } catch (err) {
+    setStatus("寫入失敗：" + err.message);
+  }
+}
+
+function copyTSV() {
+  if (!latestPackage) return alert("請先生成內容包");
+
+  const v = latestPackage.visual;
+  const keys = Object.keys(v);
+  const tsv = keys.map((k) => v[k] ?? "").join("\t");
+
+  navigator.clipboard.writeText(tsv).then(() => {
+    setStatus("已複製 03 分頁 TSV");
+  });
+}
+
+function unitCode(unit) {
+  return {
+    幸福旅居: "HL",
+    幸福教養: "HJ",
+    健康頻率: "HF",
+    生活好物: "LG",
+    幸福緣手作: "HY",
+    智慧名片商業系: "HC"
+  }[unit] || "HE";
+}
+
+function formatStamp(d) {
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
+}
+
+function escapeHtml(str) {
+  return String(str ?? "").replace(/[&<>"']/g, (s) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  }[s]));
+}
