@@ -1,290 +1,99 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>幸福產圖指令工廠</title>
-
-<style>
-body{
-  margin:0;
-  font-family:"Noto Sans TC", Arial, sans-serif;
-  background:#f7efe5;
-  color:#4f463d;
-}
-.wrap{
-  max-width:960px;
-  margin:auto;
-  padding:22px;
-}
-h1{
-  text-align:center;
-  color:#b8793f;
-}
-.card{
-  background:#fffaf4;
-  border-radius:22px;
-  padding:20px;
-  margin:18px 0;
-  box-shadow:0 8px 24px rgba(0,0,0,.08);
-}
-label{
-  font-weight:700;
-  display:block;
-  margin-top:14px;
-}
-select, textarea, input{
-  width:100%;
-  padding:13px;
-  border:1px solid #ead8c2;
-  border-radius:14px;
-  background:#fff;
-  font-size:16px;
-  box-sizing:border-box;
-}
-button{
-  width:100%;
-  padding:14px;
-  margin-top:12px;
-  border:0;
-  border-radius:16px;
-  background:#d99a56;
-  color:white;
-  font-size:17px;
-  font-weight:700;
-}
-button.secondary{
-  background:#78a978;
-}
-.output{
-  white-space:pre-wrap;
-  background:white;
-  border:1px solid #ead8c2;
-  padding:16px;
-  border-radius:16px;
-  line-height:1.8;
-  min-height:180px;
-}
-.small{
-  color:#8a7765;
-  font-size:14px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>幸福產圖指令工廠</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
-
 <body>
-<div class="wrap">
 
-<h1>☀ 幸福產圖指令工廠</h1>
-<p class="small" style="text-align:center;">選主題 → 取指令 → 複製給 AI 產圖</p>
+<div class="app">
 
-<div class="card">
-  <label>主題宇宙</label>
-  <select id="unit" onchange="loadSeries()">
-    <option value="HL">01_HL｜幸福旅居</option>
-    <option value="LGW">02_LGW｜生活感悟</option>
-    <option value="HJ">03_HJ｜幸福教養</option>
-    <option value="HY">04_HY｜幸福緣手作</option>
-    <option value="HF">05_HF｜健康頻率</option>
-    <option value="LG">06_LG｜生活好物</option>
-    <option value="HC">07_HC｜幸福天使智慧名片</option>
-  </select>
+  <div class="left card">
 
-  <label>系列</label>
-  <select id="series"></select>
+    <h1>☀ 幸福產圖指令工廠</h1>
 
-  <label>輸出比例</label>
-  <select id="ratio">
-    <option value="9:16｜1:1｜4:5">9:16｜1:1｜4:5</option>
-    <option value="9:16">9:16 短影音</option>
-    <option value="1:1">1:1 貼文</option>
-    <option value="4:5">4:5 IG高觸及</option>
-  </select>
+    <label>主題宇宙</label>
+    <select id="unit">
+      <option>幸福旅居</option>
+      <option>生活感悟</option>
+      <option>幸福教養</option>
+      <option>幸福緣手作</option>
+      <option>健康頻率生活好物</option>
+      <option>智慧名片商業系</option>
+    </select>
 
-  <label>生成數量</label>
-  <select id="count">
-    <option>10張</option>
-    <option selected>20張</option>
-    <option>30張</option>
-  </select>
+    <label>系列</label>
+    <input id="series" placeholder="例如：早安圖">
 
-  <button onclick="generatePrompt()">產生指令</button>
-  <button class="secondary" onclick="copyPrompt()">複製指令</button>
-  <button class="secondary" onclick="savePrompt()">存到指令庫</button>
+    <label>主題</label>
+    <input id="topic" placeholder="例如：海邊晨光早餐">
+
+    <label>內容類型</label>
+    <select id="contentType">
+      <option>POSTER_SINGLE</option>
+      <option>INFO_STORY_BOARD</option>
+      <option>EVENT_POSTER</option>
+      <option>PRODUCT_POSTER</option>
+      <option>RECIPE_BOARD</option>
+      <option>SHORTS_POSTER</option>
+    </select>
+
+    <label>指令分類</label>
+    <select id="promptType">
+      <option>VISUAL_PROMPT</option>
+      <option>SHORT_VIDEO_PROMPT</option>
+      <option>SERIES_EXPANSION</option>
+      <option>TOPIC_GENERATION</option>
+      <option>PLATFORM_COPY</option>
+    </select>
+
+    <label>比例</label>
+    <select id="ratio">
+      <option>9:16</option>
+      <option>1:1</option>
+      <option>4:5</option>
+      <option>16:9</option>
+    </select>
+
+    <label>短影音秒數</label>
+    <select id="duration">
+      <option>20</option>
+      <option>30</option>
+      <option>40</option>
+    </select>
+
+    <label>補充靈感</label>
+    <textarea id="extra"></textarea>
+
+    <button onclick="generatePrompt()">生成指令</button>
+
+  </div>
+
+  <div class="middle card">
+
+    <h2>AI 指令</h2>
+
+    <div id="output"></div>
+
+    <button onclick="copyPrompt()">複製 Prompt</button>
+
+  </div>
+
+  <div class="right card">
+
+    <h2>內容回填</h2>
+
+    <input id="driveLink" placeholder="Google Drive 連結">
+
+    <button onclick="saveVisualContent()">儲存視覺內容</button>
+
+  </div>
+
 </div>
 
-<div class="card">
-  <h3>AI 批次產圖指令</h3>
-  <div id="output" class="output"></div>
-</div>
-
-</div>
-
-<script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbzGjQuix5THq44jWLmFWjuKsjes2crL6ys69mPQmXqng5nJBHlxCUHgSbsgxGepXcDgxg/exec";
-
-const data = {
-  HL:{
-    name:"幸福旅居",
-    spirit:"生命是一場旅居。",
-    emotion:"慢生活、療癒感、與自己相遇、被生活溫柔接住",
-    style:"日系成人療癒繪本風、米白暖色系、暖陽、木質感、留白感、生命旅居感",
-    series:["早安圖","晚安圖","慢生活","咖啡療癒","散步療癒","生命旅居"]
-  },
-  LGW:{
-    name:"生活感悟",
-    spirit:"很多答案，都藏在人生裡。",
-    emotion:"情緒共鳴、被理解、放下、成長、自我和解",
-    style:"暖色療癒、文字感、低刺激、柔焦感、人生電影感",
-    series:["人生感悟","情緒療癒","愛與關係","放下系列","孤獨感","自我和解"]
-  },
-  HJ:{
-    name:"幸福教養",
-    spirit:"陪大人先穩住自己。",
-    emotion:"安心感、陪伴感、情緒穩定、理解孩子",
-    style:"溫暖繪本風、親子感、療癒色調、安全感、柔和角色",
-    series:["一句教養提醒","情緒教養","腦科學小知識","親子陪伴","大人情緒"]
-  },
-  HY:{
-    name:"幸福緣手作",
-    spirit:"幸福是可以被吃進心裡的。",
-    emotion:"手作感、溫暖、健康飲食、幸福料理",
-    style:"暖黃光、木質感、烘焙香氣感、奶油色系、手作溫度",
-    series:["早餐療癒","麵包日常","手作感","幸福料理","健康烘焙"]
-  },
-  HF:{
-    name:"健康頻率",
-    spirit:"讓心慢慢安靜下來。",
-    emotion:"放鬆、安定、舒眠、冥想感、低頻療癒",
-    style:"深藍暖灰、柔和光感、星空、靜心感、安定感",
-    series:["睡眠療癒","Alpha波","冥想感","夜晚頻率","深呼吸"]
-  },
-  LG:{
-    name:"生活好物",
-    spirit:"把日子過舒服，就是一種幸福。",
-    emotion:"質感、舒服、療癒、生活美感",
-    style:"奶茶色系、居家感、日系生活風、質感選物、柔和光影",
-    series:["療癒小物","咖啡生活","閱讀生活","幸福桌面","居家療癒"]
-  },
-  HC:{
-    name:"幸福天使智慧名片",
-    spirit:"讓品牌被溫柔看見。",
-    emotion:"品牌感、信任感、創業陪伴、導流感",
-    style:"高級暖色系、簡約品牌感、小太陽logo、柔和商業感",
-    series:["品牌經營","智慧名片","創業感悟","流量導流","品牌故事"]
-  }
-};
-
-function loadSeries(){
-  const unit = document.getElementById("unit").value;
-  const s = document.getElementById("series");
-  s.innerHTML = "";
-  data[unit].series.forEach(item=>{
-    const opt = document.createElement("option");
-    opt.value = item;
-    opt.textContent = item;
-    s.appendChild(opt);
-  });
-}
-loadSeries();
-
-function generatePrompt(){
-  const unit = document.getElementById("unit").value;
-  const series = document.getElementById("series").value;
-  const ratio = document.getElementById("ratio").value;
-  const count = document.getElementById("count").value;
-  const d = data[unit];
-
-  const prompt = `你是一位「幸福生態圈 AI 視覺宇宙導演＋療癒感品牌插畫師＋短影音圖片工廠」。
-
-請為「${d.name}｜${series}」生成一批可用於日更的 AI 圖片素材。
-
-【核心精神】
-${d.spirit}
-
-【核心情緒】
-${d.emotion}
-
-【視覺風格】
-${d.style}
-
-【品牌總風格】
-幸福就在簡單的日常裡。
-畫面要有溫暖、療癒、陪伴感、低刺激感、幸福感、留白感。
-固定加入：幸福天使小太陽 logo、手寫感字體、柔和光影。
-
-【輸出比例】
-請輸出：${ratio}
-
-9:16 用於 Shorts / Reels / TikTok，請保留上方標題區與下方字幕區。
-1:1 用於 IG / 小紅書貼文。
-4:5 用於 IG 高觸及貼文。
-
-【生成數量】
-請生成 ${count}。
-
-【畫面要求】
-每張圖都要像同一個幸福宇宙。
-可愛但偏成人療癒，不幼稚。
-不要科技感、不要高刺激、不要霓虹色、不要黑暗壓迫感。
-適合後續丟進開拍，加音樂做 10～20 秒短影音。
-
-【請輸出】
-每張圖片請包含：
-1. 圖片編號
-2. 畫面主題
-3. 畫面文字
-4. AI 產圖提示詞
-5. 建議檔名`;
-
-  document.getElementById("output").textContent = prompt;
-}
-
-function copyPrompt(){
-  const text = document.getElementById("output").textContent;
-  if(!text){ alert("請先產生指令"); return; }
-  navigator.clipboard.writeText(text);
-  alert("已複製指令");
-}
-
-async function savePrompt(){
-  const text = document.getElementById("output").textContent;
-  if(!text){ alert("請先產生指令"); return; }
-
-  const unit = document.getElementById("unit").value;
-  const series = document.getElementById("series").value;
-  const ratio = document.getElementById("ratio").value;
-  const d = data[unit];
-
-  const body = {
-    action:"savePrompt",
-    unit:unit,
-    series_name:series,
-    prompt_type:"批次產圖",
-    core_spirit:d.spirit,
-    core_emotion:d.emotion,
-    visual_style:d.style,
-    scene_keywords:series,
-    output_ratio:ratio,
-    output_usage:"Shorts｜IG｜小紅書｜Reels",
-    full_prompt:text,
-    status:"啟用",
-    notes:"由幸福產圖指令工廠產生"
-  };
-
-  try{
-    const res = await fetch(GAS_URL,{
-      method:"POST",
-      body:JSON.stringify(body)
-    });
-    const result = await res.json();
-    alert("已存到指令庫：" + result.prompt_id);
-  }catch(e){
-    alert("儲存失敗，請確認 GAS 部署權限");
-    console.error(e);
-  }
-}
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
