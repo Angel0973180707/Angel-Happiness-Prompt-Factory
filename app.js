@@ -4,8 +4,13 @@
 // app.js 完整覆蓋版
 // ========================================
 
+const DEFAULT_GAS_URL =
+"https://script.google.com/macros/s/AKfycbzGjQuix5THq44jWLmFWjuKsjes2crL6ys69mPQmXqng5nJBHlxCUHgSbsgxGepXcDgxg/exec";
+
 const CONFIG = {
-  GAS_URL: "https://script.google.com/macros/s/AKfycbzGjQuix5THq44jWLmFWjuKsjes2crL6ys69mPQmXqng5nJBHlxCUHgSbsgxGepXcDgxg/exec"
+  GAS_URL:
+    localStorage.getItem("GAS_URL")
+    || DEFAULT_GAS_URL
 };
 // ========================================
 // DOM
