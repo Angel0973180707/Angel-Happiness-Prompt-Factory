@@ -1,171 +1,206 @@
-body{
-  margin:0;
-  background:#f6efe6;
-  font-family:"Noto Sans TC",sans-serif;
-  color:#4e4339;
-}
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>幸福產圖指令工廠</title>
 
-.app{
-  display:grid;
-  grid-template-columns:320px 1fr 320px;
-  gap:20px;
-  padding:20px;
-  min-height:100vh;
-  box-sizing:border-box;
-}
+<link rel="stylesheet" href="style.css"/>
 
-.card{
-  background:#fffaf4;
-  border-radius:28px;
-  padding:24px;
-  box-shadow:
-    0 12px 30px rgba(0,0,0,.06),
-    0 2px 8px rgba(0,0,0,.04);
-}
+</head>
 
-h1{
-  margin-top:0;
-  margin-bottom:24px;
-  font-size:30px;
-  line-height:1.4;
-  color:#c38b4c;
-}
+<body>
 
-h2{
-  margin-top:0;
-  margin-bottom:20px;
-  color:#c38b4c;
-}
+<div class="app">
 
-label{
-  display:block;
-  margin-top:18px;
-  margin-bottom:8px;
-  font-size:15px;
-  font-weight:700;
-  color:#6d5d4f;
-}
+<!-- 左側 -->
+<div class="left card">
 
-input,
-select,
-textarea{
-  width:100%;
-  padding:15px;
-  border-radius:18px;
-  border:1px solid #eadbc8;
-  background:#fff;
-  box-sizing:border-box;
-  font-size:15px;
-  outline:none;
-  transition:.2s;
-  color:#4e4339;
-}
+<h1>☀ 幸福產圖指令工廠</h1>
 
-input:focus,
-select:focus,
-textarea:focus{
-  border-color:#d8a268;
-  box-shadow:0 0 0 4px rgba(216,162,104,.15);
-}
+<label>主題宇宙</label>
 
-textarea{
-  min-height:120px;
-  resize:vertical;
-  line-height:1.7;
-}
+<select id="unit">
 
-button{
-  width:100%;
-  margin-top:22px;
-  padding:16px;
-  border:none;
-  border-radius:20px;
-  background:#d89b5a;
-  color:white;
-  font-size:16px;
-  font-weight:700;
-  cursor:pointer;
-  transition:.2s;
-}
+<option>幸福旅居</option>
+<option>生活感悟</option>
+<option>幸福教養</option>
+<option>幸福緣手作</option>
+<option>健康頻率生活好物</option>
+<option>智慧名片商業系</option>
 
-button:hover{
-  transform:translateY(-1px);
-  opacity:.95;
-}
+</select>
 
-button:active{
-  transform:scale(.98);
-}
+<label>系列</label>
 
-#output{
-  background:white;
-  border-radius:22px;
-  padding:24px;
-  min-height:650px;
-  border:1px solid #eadbc8;
-  white-space:pre-wrap;
-  line-height:1.9;
-  overflow:auto;
-  font-size:15px;
-}
+<input
+id="series"
+placeholder="例如：早安圖"
+/>
 
-.left{
-  position:sticky;
-  top:20px;
-  height:fit-content;
-}
+<label>主題</label>
 
-.right{
-  position:sticky;
-  top:20px;
-  height:fit-content;
-}
+<input
+id="topic"
+placeholder="例如：海邊晨光早餐"
+/>
 
-::-webkit-scrollbar{
-  width:10px;
-}
+<label>主題生成數量</label>
 
-::-webkit-scrollbar-thumb{
-  background:#dcc1a0;
-  border-radius:20px;
-}
+<select id="topicCount">
 
-::-webkit-scrollbar-track{
-  background:#f5ede3;
-}
+<option>10</option>
+<option selected>20</option>
+<option>30</option>
+<option>50</option>
 
-@media(max-width:1200px){
+</select>
 
-  .app{
-    grid-template-columns:1fr;
-  }
+<label>內容類型</label>
 
-  .left,
-  .right{
-    position:relative;
-    top:auto;
-  }
+<select id="contentType">
 
-}
+<option value="POSTER_SINGLE">
+POSTER_SINGLE｜單張療癒圖文
+</option>
 
-@media(max-width:640px){
+<option value="INFO_STORY_BOARD">
+INFO_STORY_BOARD｜分隔資訊圖文
+</option>
 
-  .app{
-    padding:14px;
-    gap:14px;
-  }
+<option value="EVENT_POSTER">
+EVENT_POSTER｜活動文宣海報
+</option>
 
-  .card{
-    padding:18px;
-    border-radius:22px;
-  }
+<option value="PRODUCT_POSTER">
+PRODUCT_POSTER｜商品宣傳海報
+</option>
 
-  h1{
-    font-size:24px;
-  }
+<option value="RECIPE_BOARD">
+RECIPE_BOARD｜料理食譜圖板
+</option>
 
-  #output{
-    min-height:420px;
-  }
+<option value="SHORTS_POSTER">
+SHORTS_POSTER｜短影音封面圖
+</option>
 
-}
+</select>
+
+<label>指令類型</label>
+
+<select id="promptType">
+
+<option value="VISUAL_PROMPT">
+VISUAL_PROMPT｜視覺產圖指令
+</option>
+
+<option value="BATCH_IMAGE_PROMPT">
+BATCH_IMAGE_PROMPT｜批次主題生成
+</option>
+
+<option value="SHORT_VIDEO_PROMPT">
+SHORT_VIDEO_PROMPT｜短影音素材指令
+</option>
+
+<option value="SERIES_EXPANSION">
+SERIES_EXPANSION｜系列擴充指令
+</option>
+
+<option value="TOPIC_GENERATION">
+TOPIC_GENERATION｜主題生成指令
+</option>
+
+<option value="PLATFORM_COPY">
+PLATFORM_COPY｜多平台文案指令
+</option>
+
+<option value="SERIES_REFILL">
+SERIES_REFILL｜系列回填指令
+</option>
+
+<option value="TOPIC_REFILL">
+TOPIC_REFILL｜主題回填指令
+</option>
+
+<option value="VISUAL_REFILL">
+VISUAL_REFILL｜視覺內容回填指令
+</option>
+
+<option value="SHORT_VIDEO_REFILL">
+SHORT_VIDEO_REFILL｜短影音回填指令
+</option>
+
+</select>
+
+<label>輸出比例</label>
+
+<select id="ratio">
+
+<option>9:16</option>
+<option>1:1</option>
+<option>4:5</option>
+<option>16:9</option>
+
+</select>
+
+<label>短影音秒數</label>
+
+<select id="duration">
+
+<option>20</option>
+<option>30</option>
+<option>40</option>
+
+</select>
+
+<label>補充靈感</label>
+
+<textarea id="extra"></textarea>
+
+<button onclick="generatePrompt()">
+
+生成 AI 指令
+
+</button>
+
+</div>
+
+<!-- 中間 -->
+<div class="middle card">
+
+<h2>AI 指令輸出</h2>
+
+<div id="output"></div>
+
+<button onclick="copyPrompt()">
+
+複製 Prompt
+
+</button>
+
+</div>
+
+<!-- 右側 -->
+<div class="right card">
+
+<h2>內容回填</h2>
+
+<input
+id="driveLink"
+placeholder="Google Drive 成品連結"
+/>
+
+<button onclick="saveVisualContent()">
+
+儲存視覺內容
+
+</button>
+
+</div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
