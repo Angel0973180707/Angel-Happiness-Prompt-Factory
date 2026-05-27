@@ -13,190 +13,241 @@
 
 <div class="app">
 
-<!-- 左側 -->
-<div class="left card">
+  <!-- 左側控制 -->
+  <div class="left card">
 
-<h1>☀ 幸福產圖指令工廠</h1>
+    <h1>☀ 幸福產圖指令工廠</h1>
 
-<label>主題宇宙</label>
+    <!-- 主題宇宙 -->
+    <label>主題宇宙</label>
 
-<select id="unit">
+    <select id="unit">
 
-<option>幸福旅居</option>
-<option>生活感悟</option>
-<option>幸福教養</option>
-<option>幸福緣手作</option>
-<option>健康頻率生活好物</option>
-<option>智慧名片商業系</option>
+      <option>幸福旅居</option>
+      <option>生活感悟</option>
+      <option>幸福教養</option>
+      <option>幸福緣手作</option>
+      <option>健康頻率生活好物</option>
+      <option>智慧名片商業系</option>
 
-</select>
+    </select>
 
-<label>系列</label>
+    <!-- 系列 -->
+    <label>系列</label>
 
-<input
-id="series"
-placeholder="例如：早安圖"
-/>
+    <select id="series">
+      <option value="">請選擇系列</option>
+    </select>
 
-<label>主題</label>
+    <!-- 主題 -->
+    <label>主題</label>
 
-<input
-id="topic"
-placeholder="例如：海邊晨光早餐"
-/>
+    <input
+      id="topic"
+      placeholder="例如：海邊晨光早餐"
+    />
 
-<label>主題生成數量</label>
+    <!-- 主題生成數量 -->
+    <label>主題生成數量</label>
 
-<select id="topicCount">
+    <select id="topicCount">
 
-<option>10</option>
-<option selected>20</option>
-<option>30</option>
-<option>50</option>
+      <option>10</option>
+      <option selected>20</option>
+      <option>30</option>
+      <option>50</option>
 
-</select>
+    </select>
 
-<label>內容類型</label>
+    <!-- 內容類型 -->
+    <label>內容類型</label>
 
-<select id="contentType">
+    <select id="contentType">
 
-<option value="POSTER_SINGLE">
-POSTER_SINGLE｜單張療癒圖文
-</option>
+      <option value="POSTER_SINGLE">
+        POSTER_SINGLE｜單張療癒圖文
+      </option>
 
-<option value="INFO_STORY_BOARD">
-INFO_STORY_BOARD｜分隔資訊圖文
-</option>
+      <option value="INFO_STORY_BOARD">
+        INFO_STORY_BOARD｜分隔資訊圖文
+      </option>
 
-<option value="EVENT_POSTER">
-EVENT_POSTER｜活動文宣海報
-</option>
+      <option value="EVENT_POSTER">
+        EVENT_POSTER｜活動文宣海報
+      </option>
 
-<option value="PRODUCT_POSTER">
-PRODUCT_POSTER｜商品宣傳海報
-</option>
+      <option value="PRODUCT_POSTER">
+        PRODUCT_POSTER｜商品宣傳海報
+      </option>
 
-<option value="RECIPE_BOARD">
-RECIPE_BOARD｜料理食譜圖板
-</option>
+      <option value="RECIPE_BOARD">
+        RECIPE_BOARD｜料理食譜圖板
+      </option>
 
-<option value="SHORTS_POSTER">
-SHORTS_POSTER｜短影音封面圖
-</option>
+      <option value="SHORTS_POSTER">
+        SHORTS_POSTER｜短影音封面圖
+      </option>
 
-</select>
+    </select>
 
-<label>指令類型</label>
+    <!-- 指令類型 -->
+    <label>指令類型</label>
 
-<select id="promptType">
+    <select id="promptType">
 
-<option value="VISUAL_PROMPT">
-VISUAL_PROMPT｜視覺產圖指令
-</option>
+      <option value="VISUAL_PROMPT">
+        VISUAL_PROMPT｜視覺產圖指令
+      </option>
 
-<option value="BATCH_IMAGE_PROMPT">
-BATCH_IMAGE_PROMPT｜批次主題生成
-</option>
+      <option value="BATCH_IMAGE_PROMPT">
+        BATCH_IMAGE_PROMPT｜批次主題生成
+      </option>
 
-<option value="SHORT_VIDEO_PROMPT">
-SHORT_VIDEO_PROMPT｜短影音素材指令
-</option>
+      <option value="SHORT_VIDEO_PROMPT">
+        SHORT_VIDEO_PROMPT｜短影音素材指令
+      </option>
 
-<option value="SERIES_EXPANSION">
-SERIES_EXPANSION｜系列擴充指令
-</option>
+      <option value="SERIES_EXPANSION">
+        SERIES_EXPANSION｜系列擴充指令
+      </option>
 
-<option value="TOPIC_GENERATION">
-TOPIC_GENERATION｜主題生成指令
-</option>
+      <option value="TOPIC_GENERATION">
+        TOPIC_GENERATION｜主題生成指令
+      </option>
 
-<option value="PLATFORM_COPY">
-PLATFORM_COPY｜多平台文案指令
-</option>
+      <option value="PLATFORM_COPY">
+        PLATFORM_COPY｜多平台文案指令
+      </option>
 
-<option value="SERIES_REFILL">
-SERIES_REFILL｜系列回填指令
-</option>
+      <option value="SERIES_REFILL">
+        SERIES_REFILL｜系列回填指令
+      </option>
 
-<option value="TOPIC_REFILL">
-TOPIC_REFILL｜主題回填指令
-</option>
+      <option value="TOPIC_REFILL">
+        TOPIC_REFILL｜主題回填指令
+      </option>
 
-<option value="VISUAL_REFILL">
-VISUAL_REFILL｜視覺內容回填指令
-</option>
+      <option value="VISUAL_REFILL">
+        VISUAL_REFILL｜視覺內容回填指令
+      </option>
 
-<option value="SHORT_VIDEO_REFILL">
-SHORT_VIDEO_REFILL｜短影音回填指令
-</option>
+      <option value="SHORT_VIDEO_REFILL">
+        SHORT_VIDEO_REFILL｜短影音回填指令
+      </option>
 
-</select>
+    </select>
 
-<label>輸出比例</label>
+    <!-- 比例 -->
+    <label>輸出比例</label>
 
-<select id="ratio">
+    <select id="ratio">
 
-<option>9:16</option>
-<option>1:1</option>
-<option>4:5</option>
-<option>16:9</option>
+      <option>9:16</option>
+      <option>1:1</option>
+      <option>4:5</option>
+      <option>16:9</option>
 
-</select>
+    </select>
 
-<label>短影音秒數</label>
+    <!-- 短影音秒數 -->
+    <label>短影音秒數</label>
 
-<select id="duration">
+    <select id="duration">
 
-<option>20</option>
-<option>30</option>
-<option>40</option>
+      <option>20</option>
+      <option>30</option>
+      <option>40</option>
 
-</select>
+    </select>
 
-<label>補充靈感</label>
+    <!-- 補充靈感 -->
+    <label>補充靈感</label>
 
-<textarea id="extra"></textarea>
+    <textarea
+      id="extra"
+      placeholder="例如：海邊慢生活、晨光早餐、療癒感..."
+    ></textarea>
 
-<button onclick="generatePrompt()">
+    <!-- 按鈕 -->
+    <button onclick="generatePrompt()">
 
-生成 AI 指令
+      生成 AI 指令
 
-</button>
+    </button>
 
-</div>
+  </div>
 
-<!-- 中間 -->
-<div class="middle card">
+  <!-- 中間 Prompt -->
+  <div class="middle card">
 
-<h2>AI 指令輸出</h2>
+    <h2>AI 指令輸出</h2>
 
-<div id="output"></div>
+    <div id="output">
 
-<button onclick="copyPrompt()">
+請先選擇：
+主題宇宙、系列、指令類型。
 
-複製 Prompt
+再點擊：
 
-</button>
+「生成 AI 指令」
 
-</div>
+    </div>
 
-<!-- 右側 -->
-<div class="right card">
+    <button onclick="copyPrompt()">
 
-<h2>內容回填</h2>
+      複製 Prompt
 
-<input
-id="driveLink"
-placeholder="Google Drive 成品連結"
-/>
+    </button>
 
-<button onclick="saveVisualContent()">
+  </div>
 
-儲存視覺內容
+  <!-- 右側 -->
+  <div class="right card">
 
-</button>
+    <h2>內容回填</h2>
 
-</div>
+    <!-- Drive -->
+    <label>Google Drive 成品連結</label>
+
+    <input
+      id="driveLink"
+      placeholder="貼上 Google Drive 圖片或影片連結"
+    />
+
+    <!-- 優先級 -->
+    <label>優先級</label>
+
+    <select id="priority">
+
+      <option>P1｜立即插單</option>
+      <option>P2｜今日優先</option>
+      <option selected>P3｜一般內容</option>
+      <option>P4｜庫存內容</option>
+
+    </select>
+
+    <!-- 內容狀態 -->
+    <label>內容狀態</label>
+
+    <select id="contentStatus">
+
+      <option>待產圖</option>
+      <option selected>已產圖</option>
+      <option>待成片</option>
+      <option>已成片</option>
+      <option>已發佈</option>
+      <option>封存</option>
+
+    </select>
+
+    <!-- 儲存 -->
+    <button onclick="saveVisualContent()">
+
+      儲存視覺內容
+
+    </button>
+
+  </div>
 
 </div>
 
