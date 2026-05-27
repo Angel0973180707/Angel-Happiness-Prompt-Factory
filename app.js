@@ -1,4 +1,4 @@
-// app.js 完整覆蓋版
+// app.js 完整覆蓋版（含平台文案/Hashtag回存）
 
 const GAS_URL =
 "https://script.google.com/macros/s/AKfycbzGjQuix5THq44jWLmFWjuKsjes2crL6ys69mPQmXqng5nJBHlxCUHgSbsgxGepXcDgxg/exec";
@@ -234,16 +234,22 @@ ${extra}
 ✓ 高質感插畫
 
 ━━━━━━━━━━━━━━━━━━━
-【請輸出】
+【請固定格式輸出】
 ━━━━━━━━━━━━━━━━━━━
 
-1. 主標題
-2. 畫面文案
-3. 畫面描述
-4. AI產圖提示詞
-5. 音樂氛圍
-6. IG／TikTok／Shorts／小紅書文案
-7. Hashtag
+【主標題】
+
+【畫面文案】
+
+【畫面描述】
+
+【AI產圖提示詞】
+
+【音樂氛圍】
+
+【平台文案】
+
+【Hashtag】
 
 `;
 
@@ -300,27 +306,26 @@ ${ratio}
 ${extra}
 
 ━━━━━━━━━━━━━━━━━━━
-【畫面風格】
+【請固定格式輸出】
 ━━━━━━━━━━━━━━━━━━━
 
-✓ 日系成人療癒
-✓ 慢生活
-✓ 溫暖幸福感
-✓ 柔和暖光
-✓ 小太陽logo
+【影片標題】
 
-━━━━━━━━━━━━━━━━━━━
-【請輸出】
-━━━━━━━━━━━━━━━━━━━
+【分鏡流程】
 
-1. 分鏡流程
-2. 每張畫面描述
-3. 每張 AI產圖提示詞
-4. 配音文案
-5. 字幕內容
-6. 音樂氛圍
-7. 平台文案
-8. Hashtag
+【每張畫面描述】
+
+【每張AI產圖提示詞】
+
+【配音文案】
+
+【字幕內容】
+
+【音樂氛圍】
+
+【平台文案】
+
+【Hashtag】
 
 `;
 
@@ -329,39 +334,10 @@ ${extra}
 
 
 // ========================================
-// 系列擴充
+// 其它
 // ========================================
 
-else if(promptType === "SERIES_EXPANSION"){
-
-prompt = `
-
-請為：
-
-${unit}
-
-生成：
-
-${topicCount}個適合長期經營的新系列。
-
-每個系列需包含：
-
-1. 系列名稱
-2. 系列定位
-3. 內容方向
-4. 視覺風格
-
-`;
-
-}
-
-
-
-// ========================================
-// 主題生成
-// ========================================
-
-else if(promptType === "TOPIC_GENERATION"){
+else{
 
 prompt = `
 
@@ -371,72 +347,7 @@ ${series}
 
 生成：
 
-${topicCount}個可長期經營主題。
-
-每個主題需包含：
-
-1. 主題名稱
-2. 畫面感描述
-3. 情緒方向
-
-`;
-
-}
-
-
-
-// ========================================
-// 平台文案
-// ========================================
-
-else if(promptType === "PLATFORM_COPY"){
-
-prompt = `
-
-請為以下內容：
-
-主題：
-${topic}
-
-生成：
-
-IG
-TikTok
-Shorts
-FB
-小紅書
-
-五平台文案。
-
-包含：
-
-1. 標題
-2. 文案
-3. Hashtag
-4. CTA
-
-`;
-
-}
-
-
-
-// ========================================
-// 回填指令
-// ========================================
-
-else{
-
-prompt = `
-
-請將以下內容：
-
-主題：
-${topic}
-
-整理成：
-
-Google Sheets TSV 格式。
+${topicCount}個相關內容。
 
 `;
 
@@ -466,6 +377,23 @@ alert("已複製 Prompt");
 
 
 // ========================================
+// 解析 AI 輸出
+// ========================================
+
+function parseSection(text,title){
+
+const regex =
+new RegExp(`【${title}】([\\s\\S]*?)(?=【|$)`);
+
+const match = text.match(regex);
+
+return match ? match[1].trim() : "";
+
+}
+
+
+
+// ========================================
 // 儲存視覺內容
 // ========================================
 
@@ -483,11 +411,45 @@ document.getElementById("topic").value;
 const contentType =
 document.getElementById("contentType").value;
 
-const prompt =
+const output =
 document.getElementById("output").innerText;
 
 const driveLink =
 document.getElementById("driveLink").value;
+
+const priority =
+document.getElementById("priority").value;
+
+const contentStatus =
+document.getElementById("contentStatus").value;
+
+
+// ========================================
+// 自動解析
+// ========================================
+
+const title =
+parseSection(output,"主標題");
+
+const mainCopy =
+parseSection(output,"畫面文案");
+
+const imagePrompt =
+parseSection(output,"AI產圖提示詞");
+
+const musicStyle =
+parseSection(output,"音樂氛圍");
+
+const platformCopy =
+parseSection(output,"平台文案");
+
+const hashtags =
+parseSection(output,"Hashtag");
+
+
+// ========================================
+// 回存
+// ========================================
 
 const body = {
 
@@ -501,20 +463,24 @@ topic_name:topic,
 
 content_type:contentType,
 
-content_title:topic,
+content_title:title || topic,
 
-main_copy:"",
+main_copy:mainCopy,
 
 visual_style:"幸福感療癒繪本風",
 
 layout_type:"POSTER",
 
-image_prompt:prompt,
+image_prompt:imagePrompt,
 
 output_ratio:
 document.getElementById("ratio").value,
 
-music_style:"溫暖療癒",
+music_style:musicStyle,
+
+platform_copy:platformCopy,
+
+hashtags:hashtags,
 
 voice_style:"",
 
@@ -523,9 +489,9 @@ unit + "全平台",
 
 drive_link:driveLink,
 
-priority:"P3｜一般內容",
+priority:priority,
 
-status:"已產圖",
+status:contentStatus,
 
 notes:""
 
