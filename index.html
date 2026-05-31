@@ -83,13 +83,55 @@
       <h2>⑤ AI 協作指令包</h2>
       <div id="promptOutput" class="empty">生成後會出現可複製的 AI 協作指令。</div>
     </section>
+<section class="panel">
+  <h2>⑥ AI 提案指令產生器</h2>
 
-    <section class="panel">
-      <h2>⑥ 內容品質分析</h2>
-      <div id="contentAnalysisBox" class="empty">故事模式生成後會自動分析內容品質。</div>
-    </section>
-  </main>
+  <label>客戶品牌名稱</label>
+  <input id="proposalBrandName" placeholder="例如：愛在幸福621" />
 
-  <script src="app.js"></script>
+  <label>產業類型</label>
+  <input id="proposalIndustry" placeholder="例如：宜蘭包棟民宿、健康管理、烘焙、協會課程招生" />
+
+  <label>目前狀況</label>
+  <textarea id="proposalCurrentStatus" placeholder="例如：有同行轉介，但客戶詢問後常常沒有下文。"></textarea>
+
+  <label>主要困難 / 痛點</label>
+  <textarea id="proposalPainPoints" placeholder="例如：不知道客人為什麼消失、缺少成交SOP、短影音不知道怎麼做。"></textarea>
+
+  <label>核心優勢</label>
+  <textarea id="proposalCoreFeatures" placeholder="例如：稻田景觀、親子戲水池、露營車、包棟、烤肉區。"></textarea>
+
+  <label>目標客群</label>
+  <textarea id="proposalTargetAudience" placeholder="例如：親子家庭、三代同堂、好友包棟、公司小聚。"></textarea>
+
+  <label>預算 / 合作範圍</label>
+  <input id="proposalBudgetRange" placeholder="例如：先做智慧名片＋一頁式網頁＋短影音企劃" />
+
+  <label>提案風格</label>
+  <select id="proposalStyle">
+    <option value="溫暖療癒、生活感、幸福感">溫暖療癒</option>
+    <option value="專業商務、清楚、有成交力">專業成交</option>
+    <option value="活潑有趣、適合短影音導流">活潑導流</option>
+    <option value="高質感品牌、適合提案簡報">高質感品牌</option>
+  </select>
+
+  <div class="grid">
+    <button id="generateProposalPromptBtn">產生精緻AI提案指令</button>
+    <button id="copyProposalPromptBtn" class="secondary">複製指令</button>
+  </div>
+
+  <div id="proposalPromptOutput" class="empty">尚未產生提案指令。</div>
+</section>
+   <section class="panel">
+  <h2>⑦ 內容品質分析</h2>
+  <div id="contentAnalysisBox" class="empty">
+    故事模式生成後會自動分析內容品質。
+  </div>
+</section>
+
+</main>
+
+<script src="app.js"></script>
+
 </body>
 </html>
