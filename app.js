@@ -1,6 +1,6 @@
 // ========================================
-// 幸福生態圈 AI OS v5.2
-// 雙模式 + AI 協作指令包
+// 幸福生態圈 AI OS v5.3
+// 雙模式 + AI 協作指令包 + AI提案指令產生器
 // ========================================
 
 const DEFAULT_GAS_URL =
@@ -33,7 +33,19 @@ const els = {
 
   output: document.getElementById("output"),
   promptOutput: document.getElementById("promptOutput"),
-  contentAnalysisBox: document.getElementById("contentAnalysisBox")
+  contentAnalysisBox: document.getElementById("contentAnalysisBox"),
+
+  proposalBrandName: document.getElementById("proposalBrandName"),
+  proposalIndustry: document.getElementById("proposalIndustry"),
+  proposalCurrentStatus: document.getElementById("proposalCurrentStatus"),
+  proposalPainPoints: document.getElementById("proposalPainPoints"),
+  proposalCoreFeatures: document.getElementById("proposalCoreFeatures"),
+  proposalTargetAudience: document.getElementById("proposalTargetAudience"),
+  proposalBudgetRange: document.getElementById("proposalBudgetRange"),
+  proposalStyle: document.getElementById("proposalStyle"),
+  generateProposalPromptBtn: document.getElementById("generateProposalPromptBtn"),
+  copyProposalPromptBtn: document.getElementById("copyProposalPromptBtn"),
+  proposalPromptOutput: document.getElementById("proposalPromptOutput")
 };
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -48,6 +60,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
   els.generateUniverseBtn?.addEventListener("click", generateUniverseMode);
   els.generateStoryBtn?.addEventListener("click", generateStoryMode);
+
+  els.generateProposalPromptBtn?.addEventListener("click", generateProposalPrompt);
+  els.copyProposalPromptBtn?.addEventListener("click", copyProposalPrompt);
 
   setMode("universe");
 });
@@ -307,6 +322,221 @@ async function generateStoryMode() {
     els.output.innerHTML = "寫入失敗：" + err.message;
     setStatus("寫入失敗");
   }
+}
+
+/* =========================
+   AI 提案指令產生器
+========================= */
+
+function generateProposalPrompt() {
+  const brandName = els.proposalBrandName?.value?.trim() || "";
+  const industry = els.proposalIndustry?.value?.trim() || "";
+  const currentStatus = els.proposalCurrentStatus?.value?.trim() || "";
+  const painPoints = els.proposalPainPoints?.value?.trim() || "";
+  const coreFeatures = els.proposalCoreFeatures?.value?.trim() || "";
+  const targetAudience = els.proposalTargetAudience?.value?.trim() || "";
+  const budgetRange = els.proposalBudgetRange?.value?.trim() || "";
+  const proposalStyle = els.proposalStyle?.value || "";
+
+  if (!brandName || !industry) {
+    alert("請至少填寫客戶品牌名稱與產業類型");
+    return;
+  }
+
+  const prompt = `你是一位「品牌成交策略師＋智慧名片導流顧問＋AI內容工廠企劃師」。
+
+你的任務不是做一般行銷建議，而是幫我設計一份：
+「能讓客戶看懂、願意合作、可以落地執行」的推廣策略方案。
+
+━━━━━━━━━━━━━━━━━━━
+【客戶品牌】
+━━━━━━━━━━━━━━━━━━━
+${brandName}
+
+━━━━━━━━━━━━━━━━━━━
+【產業類型】
+━━━━━━━━━━━━━━━━━━━
+${industry}
+
+━━━━━━━━━━━━━━━━━━━
+【目前狀況】
+━━━━━━━━━━━━━━━━━━━
+${currentStatus || "尚未填寫，請你依照產業合理推估，但要標註為推估。"}
+
+━━━━━━━━━━━━━━━━━━━
+【主要困難 / 痛點】
+━━━━━━━━━━━━━━━━━━━
+${painPoints || "尚未填寫，請你從成交流程、流量來源、客戶信任、內容素材與追蹤管理角度推估。"}
+
+━━━━━━━━━━━━━━━━━━━
+【核心優勢】
+━━━━━━━━━━━━━━━━━━━
+${coreFeatures || "尚未填寫，請你先列出需要補問的資料。"}
+
+━━━━━━━━━━━━━━━━━━━
+【目標客群】
+━━━━━━━━━━━━━━━━━━━
+${targetAudience || "尚未填寫，請你依照產業提供可能客群，並標註優先順序。"}
+
+━━━━━━━━━━━━━━━━━━━
+【預算 / 合作範圍】
+━━━━━━━━━━━━━━━━━━━
+${budgetRange || "尚未填寫，請提供入門版、標準版、進階版三種可選方案。"}
+
+━━━━━━━━━━━━━━━━━━━
+【提案風格】
+━━━━━━━━━━━━━━━━━━━
+${proposalStyle}
+
+━━━━━━━━━━━━━━━━━━━
+【請用以下策略角度分析】
+━━━━━━━━━━━━━━━━━━━
+
+請從「成交閉環」規劃，不要只寫曝光。
+
+請分析：
+
+1. 客戶為什麼會心動？
+2. 客戶為什麼會問完消失？
+3. 第一波客源去哪裡找？
+4. 哪些流量入口最值得先做？
+5. 智慧名片如何承接流量？
+6. CTA按鈕怎麼安排？
+7. 一頁式網頁應該放什麼？
+8. 短影音主題如何設計？
+9. LINE詢問後如何成交？
+10. 如何追蹤成效、回訪與轉介紹？
+
+━━━━━━━━━━━━━━━━━━━
+【請輸出完整提案】
+━━━━━━━━━━━━━━━━━━━
+
+一、方案核心判斷
+請用白話說明：這個案子真正要賣的不是什麼？真正要賣的是什麼？
+
+二、品牌一句話定位
+請給 5 組定位語，分成：
+1. 溫暖版
+2. 專業版
+3. 成交版
+4. 短影音版
+5. 智慧名片版
+
+三、目標客群分析
+請列出 3～5 種最可能成交客群，並說明：
+・他們在意什麼
+・他們怕什麼
+・他們會搜尋什麼
+・什麼內容會讓他們想詢問
+
+四、流量入口設計
+請列出：
+・免費流量
+・平台流量
+・短影音流量
+・Google搜尋 / 地圖流量
+・轉介紹流量
+並排序優先順序。
+
+五、智慧名片導流設計
+請設計：
+・首頁主標
+・副標
+・跑馬燈文案 5 組
+・品牌故事區
+・影音平台區
+・CTA按鈕 1～3 顆
+・聯絡區
+・Google地圖 / LINE / 一頁式網頁如何串接
+
+六、一頁式網頁架構
+請設計一頁式網頁內容：
+・首屏標題
+・痛點引導
+・服務亮點
+・方案內容
+・案例 / 見證
+・FAQ
+・CTA導流
+
+七、短影音內容策略
+請產出：
+・短影音主軸 5 類
+・每類 5 個主題
+・最適合第一支拍的爆款主題
+・30秒分鏡腳本
+・字幕
+・AI配音稿
+・結尾導流
+
+八、LINE成交SOP
+請設計：
+・客戶一開始詢問時怎麼回
+・如何問需求
+・如何推薦方案
+・如何避免客戶消失
+・如何催單不尷尬
+・3組可直接複製的LINE回覆話術
+
+九、30天執行步驟
+請分成：
+第1週：基礎整理
+第2週：內容發布
+第3週：導流成交
+第4週：追蹤優化
+
+十、報價建議
+請依照此案設計：
+・入門方案
+・標準方案
+・進階方案
+每個方案包含：
+內容、適合客戶、價格區間、交付成果。
+
+十一、客戶聽得懂的簡短說法
+請幫我寫一段 1 分鐘內可以對客戶說明的提案話術。
+
+十二、下一步行動
+請列出我接下來要跟客戶拿的資料清單，以及第一個可以交付的成果。
+
+━━━━━━━━━━━━━━━━━━━
+【語氣要求】
+━━━━━━━━━━━━━━━━━━━
+請用繁體中文。
+語氣要清楚、溫暖、有成交力。
+不要太學術。
+不要只講概念。
+要有可執行步驟。
+遇到資料不足時，請主動標註「需補資料」並給補問問題。`;
+
+  els.proposalPromptOutput.innerHTML = `
+    <div class="prompt-card">
+      <b>${escapeHtml(brandName)}｜精緻AI提案協作指令</b>
+      <pre id="proposalPromptText">${escapeHtml(prompt)}</pre>
+    </div>
+  `;
+
+  setStatus("精緻AI提案指令已產生");
+}
+
+function copyProposalPrompt() {
+  const el = document.getElementById("proposalPromptText");
+
+  if (!el) {
+    alert("請先產生提案指令");
+    return;
+  }
+
+  navigator.clipboard.writeText(el.innerText)
+    .then(() => setStatus("已複製精緻AI提案指令"))
+    .catch(() => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      setStatus("已選取指令文字，請手動複製");
+    });
 }
 
 /* =========================
